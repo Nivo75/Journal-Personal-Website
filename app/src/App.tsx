@@ -80,10 +80,10 @@ function App() {
     const load = async () => {
       try {
         const [projectsRes, tripsRes, photosRes, statsRes] = await Promise.all([
-          fetch('/content/peaks.json'),
-          fetch('/content/tripReports.json'),
-          fetch('/content/gallery.json'),
-          fetch('/content/site.json'),
+          fetch('/content/projects.json'),
+          fetch('/content/trips.json'),
+          fetch('/content/photos.json'),
+          fetch('/content/profile.json'),
         ])
 
         if (projectsRes.ok) setProjects(toItems<Project>(await projectsRes.json()))
@@ -125,7 +125,7 @@ function App() {
     }
 
     loadJournalIndex()
-  }, [activeJournalSlug])
+  }, [])
 
   useEffect(() => {
     const loadEntry = async () => {
@@ -251,8 +251,8 @@ function App() {
                       </tr>
                     </thead>
                     <tbody>
-                      {projects.slice(0, 5).map((project, i) => (
-                        <tr key={i} className="cursor-pointer">
+                      {projects.slice(0, 5).map((project) => (
+                        <tr key={`${project.name}-${project.date}`} className="cursor-pointer">
                           <td className="text-[var(--link)]">{project.name}</td>
                           <td>{project.location}</td>
                           <td>{project.date}</td>
@@ -277,8 +277,8 @@ function App() {
                   <div className="p-4">{emptyState('No trips yet', 'First entries are coming soon.')}</div>
                 ) : (
                   <ul className="list-plain">
-                    {tripReports.slice(0, 5).map((report, i) => (
-                      <li key={i} className="flex items-center justify-between py-3">
+                    {tripReports.slice(0, 5).map((report) => (
+                      <li key={`${report.title}-${report.date}`} className="flex items-center justify-between py-3">
                         <div>
                           <div className="text-[var(--link)] text-sm">{report.title}</div>
                           <div className="text-[var(--text-muted)] text-xs">{report.date}</div>
@@ -309,9 +309,9 @@ function App() {
                   emptyState('No photos yet', 'A photo gallery is coming soon.')
                 ) : (
                   <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                    {galleryImages.map((img, i) => (
+                    {galleryImages.map((img) => (
                       <div
-                        key={i}
+                        key={`${img.src}-${img.date}`}
                         className="thumb cursor-pointer"
                         onClick={() => setSelectedImage(img.src)}
                       >
@@ -349,7 +349,7 @@ function App() {
                   </thead>
                   <tbody>
                     {projects.map((project, i) => (
-                      <tr key={i}>
+                      <tr key={`${project.name}-${project.date}`}>
                         <td className="text-[var(--text-muted)]">{i + 1}</td>
                         <td className="text-[var(--link)] cursor-pointer hover:underline">{project.name}</td>
                         <td>{project.elevation}</td>
@@ -379,8 +379,8 @@ function App() {
                 )}
               </div>
             </div>
-            {tripReports.map((report, i) => (
-              <div key={i} className="box">
+            {tripReports.map((report) => (
+              <div key={`${report.title}-${report.date}`} className="box">
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="text-lg font-semibold text-[var(--link)] cursor-pointer hover:underline">
@@ -465,8 +465,8 @@ function App() {
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {galleryImages.map((img, i) => (
-                  <div key={i} className="box p-2">
+                {galleryImages.map((img) => (
+                  <div key={`${img.src}-${img.date}`} className="box p-2">
                     <div
                       className="thumb cursor-pointer mb-2"
                       onClick={() => setSelectedImage(img.src)}
