@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { 
   Mountain, 
-  Map, 
   Camera, 
   BookOpen, 
-  Mail, 
   User,
   Calendar,
   TrendingUp,
@@ -154,7 +152,7 @@ function App() {
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center gap-3">
               <Mountain className="w-6 h-6 text-[var(--accent)]" />
-              <h1 className="text-xl font-bold tracking-tight">PEAKBAGGER LOG</h1>
+              <h1 className="text-xl font-bold tracking-tight">NIVO JOURNAL</h1>
             </div>
             <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
               <span>Member since {stats.memberSince}</span>
@@ -167,12 +165,10 @@ function App() {
           <nav className="flex gap-1 -mb-px">
             {[
               { id: 'home', label: 'Home', icon: Compass },
-              { id: 'peaks', label: 'Peak List', icon: Mountain },
-              { id: 'trips', label: 'Trip Reports', icon: BookOpen },
               { id: 'journal', label: 'Journal', icon: Calendar },
-              { id: 'gallery', label: 'Photos', icon: Camera },
-              { id: 'map', label: 'Map', icon: Map },
-              { id: 'contact', label: 'Contact', icon: Mail },
+              { id: 'trips', label: 'Trips', icon: BookOpen },
+              { id: 'projects', label: 'Projects', icon: Mountain },
+              { id: 'photos', label: 'Photos', icon: Camera },
             ].map((item) => (
               <button
                 key={item.id}
@@ -195,16 +191,15 @@ function App() {
           <div className="space-y-6">
             {/* Welcome Box */}
             <div className="box">
-              <div className="box-header">Welcome to My Peakbagger Log</div>
+              <div className="box-header">Welcome to My Personal Site</div>
               <div className="p-4">
                 <p className="text-[var(--text-secondary)] mb-4">
-                  This is a record of my mountain climbing activities in the Pacific Northwest and beyond. 
-                  I've been peak bagging since 2018, focusing primarily on volcanoes and major summits in 
-                  the Cascade Range. All elevations are in feet.
+                  This is a home for my notes, adventures, and projects in the Pacific Northwest and beyond.
+                  I use it to keep a running record of experiences, route details, and ideas over time.
                 </p>
                 <p className="text-[var(--text-secondary)]">
-                  Use the navigation above to view my peak list, trip reports, photos, and route maps. 
-                  Feel free to contact me if you have questions about any of the routes or conditions.
+                  Use the navigation above to explore journal entries, trip write-ups, project logs,
+                  and photos from the trail.
                 </p>
               </div>
             </div>
@@ -213,7 +208,7 @@ function App() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="box text-center p-4">
                 <div className="stat-number">{stats.peaksClimbed}</div>
-                <div className="stat-label">Peaks Climbed</div>
+                <div className="stat-label">Routes Completed</div>
               </div>
               <div className="box text-center p-4">
                 <div className="stat-number">{stats.totalElevation}</div>
@@ -230,12 +225,12 @@ function App() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Recent Peaks */}
+              {/* Recent Projects */}
               <div className="box">
                 <div className="box-header flex items-center justify-between">
-                  <span>Recent Peaks</span>
+                  <span>Recent Projects</span>
                   <button 
-                    onClick={() => setActiveTab('peaks')}
+                    onClick={() => setActiveTab('projects')}
                     className="text-[var(--link)] text-xs hover:underline"
                   >
                     View All
@@ -244,8 +239,8 @@ function App() {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>Peak</th>
-                      <th>Elevation</th>
+                      <th>Project</th>
+                      <th>Region</th>
                       <th>Date</th>
                     </tr>
                   </thead>
@@ -294,7 +289,7 @@ function App() {
               <div className="box-header flex items-center justify-between">
                 <span>Latest Photos</span>
                 <button 
-                  onClick={() => setActiveTab('gallery')}
+                  onClick={() => setActiveTab('photos')}
                   className="text-[var(--link)] text-xs hover:underline"
                 >
                   View Gallery
@@ -321,24 +316,24 @@ function App() {
           </div>
         )}
 
-        {/* PEAKS TAB */}
-        {activeTab === 'peaks' && (
+        {/* PROJECTS TAB */}
+        {activeTab === 'projects' && (
           <div className="box">
-            <div className="box-header">Complete Peak List</div>
+            <div className="box-header">Projects</div>
             <div className="p-4">
               <p className="text-[var(--text-secondary)] text-sm mb-4">
-                Below is the complete list of peaks I've summited, sorted by date. 
-                Click on any peak name to view detailed route information and trip conditions.
+                A running list of ongoing and completed field projects, sorted by date.
+                Select any entry to review notes, location details, and related trip context.
               </p>
               <table className="table">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Peak Name</th>
-                    <th>Elevation</th>
+                    <th>Project</th>
+                    <th>Distance / Gain</th>
                     <th>Location</th>
-                    <th>Type</th>
-                    <th>Date Summited</th>
+                    <th>Category</th>
+                    <th>Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -365,7 +360,7 @@ function App() {
               <div className="box-header">Trip Reports</div>
               <div className="p-4">
                 <p className="text-[var(--text-secondary)] text-sm mb-4">
-                  Detailed accounts of selected climbs including route conditions, gear used, and lessons learned.
+                  Detailed accounts of selected trips including route conditions, gear used, and lessons learned.
                 </p>
               </div>
             </div>
@@ -379,7 +374,7 @@ function App() {
                     <span className="tag">{report.date}</span>
                   </div>
                   <p className="text-[var(--text-secondary)] text-sm mb-3">
-                    Trip report detailing the route, conditions, and key decision points during this climb. 
+                    Trip report detailing the route, conditions, and key decision points from the outing.
                     Includes photos and GPS track where available.
                   </p>
                   <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
@@ -442,14 +437,14 @@ function App() {
           </div>
         )}
 
-        {/* GALLERY TAB */}
-        {activeTab === 'gallery' && (
+        {/* PHOTOS TAB */}
+        {activeTab === 'photos' && (
           <div className="space-y-4">
             <div className="box">
               <div className="box-header">Photo Gallery</div>
               <div className="p-4">
                 <p className="text-[var(--text-secondary)] text-sm">
-                  Selected photos from various climbs. Click on any image to view full size.
+                  Selected photos from recent trips and projects. Click on any image to view full size.
                 </p>
               </div>
             </div>
@@ -477,81 +472,6 @@ function App() {
           </div>
         )}
 
-        {/* MAP TAB */}
-        {activeTab === 'map' && (
-          <div className="box">
-            <div className="box-header">Peak Map</div>
-            <div className="p-4">
-              <p className="text-[var(--text-secondary)] text-sm mb-4">
-                Map showing locations of climbed peaks in the Pacific Northwest.
-              </p>
-              <div className="bg-[var(--bg-tertiary)] border border-[var(--border)] h-96 flex items-center justify-center">
-                <div className="text-center text-[var(--text-muted)]">
-                  <Map className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>Interactive map would be displayed here</p>
-                  <p className="text-xs mt-2">Showing {stats.peaksClimbed} peak locations</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* CONTACT TAB */}
-        {activeTab === 'contact' && (
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="box">
-              <div className="box-header">Contact Information</div>
-              <div className="p-4 space-y-4">
-                <p className="text-[var(--text-secondary)] text-sm">
-                  Have questions about a route? Want to climb together? Feel free to reach out.
-                </p>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-4 h-4 text-[var(--accent)]" />
-                    <span className="text-sm">climber@peakbagger.log</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Map className="w-4 h-4 text-[var(--accent)]" />
-                    <span className="text-sm">Portland, Oregon</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-[var(--accent)]" />
-                    <span className="text-sm">Member since 2018</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="box">
-              <div className="box-header">Send Message</div>
-              <div className="p-4">
-                <form 
-                  className="space-y-4"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    alert('Message sent!')
-                  }}
-                >
-                  <div>
-                    <label className="block text-xs text-[var(--text-secondary)] mb-1">Name</label>
-                    <input type="text" className="input" placeholder="Your name" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-[var(--text-secondary)] mb-1">Email</label>
-                    <input type="email" className="input" placeholder="your@email.com" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-[var(--text-secondary)] mb-1">Message</label>
-                    <textarea className="input resize-none" rows={4} placeholder="Your message..." />
-                  </div>
-                  <button type="submit" className="btn btn-primary w-full">
-                    Send Message
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
 
       {/* Footer */}
@@ -560,11 +480,11 @@ function App() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Mountain className="w-4 h-4 text-[var(--accent)]" />
-              <span className="font-semibold">PEAKBAGGER LOG</span>
+              <span className="font-semibold">Nivo Journal</span>
             </div>
             <div className="text-center md:text-right">
-              <p>© 2024 Peakbagger Log. All rights reserved.</p>
-              <p className="mt-1">Climb safe, climb smart.</p>
+              <p>© 2024 Nivo Journal. All rights reserved.</p>
+              <p className="mt-1">Document often, explore more.</p>
             </div>
           </div>
         </div>
