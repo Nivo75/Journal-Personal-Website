@@ -1,0 +1,9 @@
+{
+  "items": [
+    {"name":"Mount Rainier","elevation":"14,411 ft","location":"Washington","date":"2023-07-15","type":"Volcano"},
+    {"name":"Mount Hood","elevation":"11,249 ft","location":"Oregon","date":"2023-06-22","type":"Volcano"},
+    {"name":"Mount Adams","elevation":"12,281 ft","location":"Washington","date":"2022-08-30","type":"Volcano"},
+    {"name":"Mount St. Helens","elevation":"8,363 ft","location":"Washington","date":"2022-05-14","type":"Volcano"},
+    {"name":"Mount Shasta","elevation":"14,179 ft","location":"California","date":"2021-09-03","type":"Volcano"}
+  ]
+}

@@ -1,0 +1,84 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "app/public/uploads"
+public_folder: "/uploads"
+
+publish_mode: editorial_workflow
+
+collections:
+  - name: "site"
+    label: "Site"
+    files:
+      - label: "Stats"
+        name: "stats"
+        file: "app/public/content/site.json"
+        format: "json"
+        fields:
+          - { label: "Peaks Climbed", name: "peaksClimbed", widget: "number" }
+          - { label: "Total Elevation", name: "totalElevation", widget: "string" }
+          - { label: "Trip Reports (count)", name: "tripReports", widget: "number" }
+          - { label: "Photos (count)", name: "photos", widget: "number" }
+          - { label: "Member Since", name: "memberSince", widget: "string" }
+          - { label: "Home Base", name: "homeBase", widget: "string" }
+  - name: "peaks"
+    label: "Peaks"
+    files:
+      - label: "Peak List"
+        name: "peakList"
+        file: "app/public/content/peaks.json"
+        format: "json"
+        fields:
+          - label: "Peaks"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Elevation", name: "elevation", widget: "string" }
+              - { label: "Location", name: "location", widget: "string" }
+              - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+              - { label: "Type", name: "type", widget: "string" }
+  - name: "trips"
+    label: "Trip Reports"
+    files:
+      - label: "Trip Report List"
+        name: "tripReports"
+        file: "app/public/content/tripReports.json"
+        format: "json"
+        fields:
+          - label: "Trip Reports"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Date", name: "date", widget: "string" }
+              - { label: "Views", name: "views", widget: "number" }
+              - { label: "Comments", name: "comments", widget: "number" }
+  - name: "gallery"
+    label: "Photo Gallery"
+    files:
+      - label: "Gallery"
+        name: "gallery"
+        file: "app/public/content/gallery.json"
+        format: "json"
+        fields:
+          - label: "Photos"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "Image", name: "src", widget: "image" }
+              - { label: "Caption", name: "caption", widget: "string" }
+              - { label: "Date", name: "date", widget: "string" }
+  - name: "journal"
+    label: "Journal Entries"
+    folder: "app/public/journal"
+    create: true
+    format: "frontmatter"
+    extension: "md"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Tags", name: "tags", widget: "list", allow_add: true }
+      - { label: "Body", name: "body", widget: "markdown" }

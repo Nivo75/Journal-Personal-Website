@@ -1,0 +1,10 @@
+{
+  "items": [
+    {"src":"/gallery-1.jpg","caption":"Summit view, Mount Rainier","date":"Jul 2023"},
+    {"src":"/gallery-2.jpg","caption":"Early morning start","date":"Jun 2023"},
+    {"src":"/gallery-3.jpg","caption":"Traversing the glacier","date":"Aug 2022"},
+    {"src":"/gallery-4.jpg","caption":"Camp at 10,000 ft","date":"Sep 2022"},
+    {"src":"/gallery-5.jpg","caption":"Route finding","date":"May 2022"},
+    {"src":"/gallery-6.jpg","caption":"Descent at dusk","date":"Jul 2021"}
+  ]
+}

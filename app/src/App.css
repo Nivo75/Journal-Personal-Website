@@ -1,0 +1,50 @@
+/* App-specific styles - minimal additions */
+
+/* Ensure images load with proper styling */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Table row hover cursor */
+table tbody tr {
+  cursor: default;
+}
+
+table tbody tr td:first-child {
+  cursor: pointer;
+}
+
+/* Modal animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fixed {
+  animation: fadeIn 0.15s ease-out;
+}
+
+/* Focus improvements for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  header,
+  footer,
+  nav,
+  .btn {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
