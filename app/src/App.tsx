@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import {
-  Mountain,
-  Camera,
-  BookOpen,
+import { 
+  Mountain, 
+  Camera, 
+  BookOpen, 
   User,
   Calendar,
   TrendingUp,
@@ -229,25 +229,31 @@ function App() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
+              {/* Recent Projects */}
               <div className="box">
                 <div className="box-header flex items-center justify-between">
                   <span>Recent Projects</span>
-                  <button
+                  <button 
                     onClick={() => setActiveTab('projects')}
                     className="text-[var(--link)] text-xs hover:underline"
                   >
                     View All
                   </button>
                 </div>
-                {projects.length === 0 ? (
-                  <div className="p-4">{emptyState('No projects yet', 'First project entries are coming soon.')}</div>
-                ) : (
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Project</th>
-                        <th>Region</th>
-                        <th>Date</th>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th>Region</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {peaks.slice(0, 5).map((peak, i) => (
+                      <tr key={i} className="cursor-pointer">
+                        <td className="text-[var(--link)]">{peak.name}</td>
+                        <td>{peak.elevation}</td>
+                        <td>{peak.date}</td>
                       </tr>
                     </thead>
                     <tbody>
@@ -297,7 +303,7 @@ function App() {
             <div className="box">
               <div className="box-header flex items-center justify-between">
                 <span>Latest Photos</span>
-                <button
+                <button 
                   onClick={() => setActiveTab('photos')}
                   className="text-[var(--link)] text-xs hover:underline"
                 >
@@ -329,22 +335,35 @@ function App() {
           </div>
         )}
 
+        {/* PROJECTS TAB */}
         {activeTab === 'projects' && (
           <div className="box">
             <div className="box-header">Projects</div>
             <div className="p-4">
-              {projects.length === 0 ? (
-                emptyState('No projects yet', 'No project logs published yet — check back soon.')
-              ) : (
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Project</th>
-                      <th>Distance / Gain</th>
-                      <th>Location</th>
-                      <th>Category</th>
-                      <th>Date</th>
+              <p className="text-[var(--text-secondary)] text-sm mb-4">
+                A running list of ongoing and completed field projects, sorted by date.
+                Select any entry to review notes, location details, and related trip context.
+              </p>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Project</th>
+                    <th>Distance / Gain</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {peaks.map((peak, i) => (
+                    <tr key={i}>
+                      <td className="text-[var(--text-muted)]">{i + 1}</td>
+                      <td className="text-[var(--link)] cursor-pointer hover:underline">{peak.name}</td>
+                      <td>{peak.elevation}</td>
+                      <td>{peak.location}</td>
+                      <td><span className="tag">{peak.type}</span></td>
+                      <td>{peak.date}</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -370,13 +389,9 @@ function App() {
             <div className="box">
               <div className="box-header">Trip Reports</div>
               <div className="p-4">
-                {tripReports.length === 0 ? (
-                  emptyState('No trips yet', 'No trip reports published yet — first entries coming soon.')
-                ) : (
-                  <p className="text-[var(--text-secondary)] text-sm mb-4">
-                    Detailed accounts of selected trips including route conditions, gear used, and lessons learned.
-                  </p>
-                )}
+                <p className="text-[var(--text-secondary)] text-sm mb-4">
+                  Detailed accounts of selected trips including route conditions, gear used, and lessons learned.
+                </p>
               </div>
             </div>
             {tripReports.map((report) => (
@@ -449,6 +464,7 @@ function App() {
           </div>
         )}
 
+        {/* PHOTOS TAB */}
         {activeTab === 'photos' && (
           <div className="space-y-4">
             <div className="box">
@@ -459,35 +475,30 @@ function App() {
                 </p>
               </div>
             </div>
-            {galleryImages.length === 0 ? (
-              <div className="box p-4">
-                {emptyState('No photos yet', 'No photos published yet — first uploads are coming soon.')}
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {galleryImages.map((img) => (
-                  <div key={`${img.src}-${img.date}`} className="box p-2">
-                    <div
-                      className="thumb cursor-pointer mb-2"
-                      onClick={() => setSelectedImage(img.src)}
-                    >
-                      <img
-                        src={img.src}
-                        alt={img.caption}
-                        className="w-full h-48 object-cover"
-                      />
-                    </div>
-                    <div className="text-sm text-[var(--text-primary)]">{img.caption}</div>
-                    <div className="text-xs text-[var(--text-muted)] flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {img.date}
-                    </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {galleryImages.map((img, i) => (
+                <div key={i} className="box p-2">
+                  <div 
+                    className="thumb cursor-pointer mb-2"
+                    onClick={() => setSelectedImage(img.src)}
+                  >
+                    <img 
+                      src={img.src} 
+                      alt={img.caption}
+                      className="w-full h-48 object-cover"
+                    />
                   </div>
-                ))}
-              </div>
-            )}
+                  <div className="text-sm text-[var(--text-primary)]">{img.caption}</div>
+                  <div className="text-xs text-[var(--text-muted)] flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {img.date}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
+
       </main>
 
       <footer className="footer">
