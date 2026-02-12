@@ -249,24 +249,15 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {peaks.slice(0, 5).map((peak, i) => (
-                      <tr key={i} className="cursor-pointer">
-                        <td className="text-[var(--link)]">{peak.name}</td>
-                        <td>{peak.elevation}</td>
-                        <td>{peak.date}</td>
+                    {projects.slice(0, 5).map((project) => (
+                      <tr key={`${project.name}-${project.date}`} className="cursor-pointer">
+                        <td className="text-[var(--link)]">{project.name}</td>
+                        <td>{project.location}</td>
+                        <td>{project.date}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {projects.slice(0, 5).map((project) => (
-                        <tr key={`${project.name}-${project.date}`} className="cursor-pointer">
-                          <td className="text-[var(--link)]">{project.name}</td>
-                          <td>{project.location}</td>
-                          <td>{project.date}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
               <div className="box">
@@ -356,30 +347,18 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {peaks.map((peak, i) => (
-                    <tr key={i}>
+                  {projects.map((project, i) => (
+                    <tr key={`${project.name}-${project.date}`}>
                       <td className="text-[var(--text-muted)]">{i + 1}</td>
-                      <td className="text-[var(--link)] cursor-pointer hover:underline">{peak.name}</td>
-                      <td>{peak.elevation}</td>
-                      <td>{peak.location}</td>
-                      <td><span className="tag">{peak.type}</span></td>
-                      <td>{peak.date}</td>
+                      <td className="text-[var(--link)] cursor-pointer hover:underline">{project.name}</td>
+                      <td>{project.elevation}</td>
+                      <td>{project.location}</td>
+                      <td><span className="tag">{project.type}</span></td>
+                      <td>{project.date}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {projects.map((project, i) => (
-                      <tr key={`${project.name}-${project.date}`}>
-                        <td className="text-[var(--text-muted)]">{i + 1}</td>
-                        <td className="text-[var(--link)] cursor-pointer hover:underline">{project.name}</td>
-                        <td>{project.elevation}</td>
-                        <td>{project.location}</td>
-                        <td><span className="tag">{project.type}</span></td>
-                        <td>{project.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
