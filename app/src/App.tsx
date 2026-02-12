@@ -4,6 +4,12 @@ import {
   Mountain,
   Camera,
   BookOpen,
+import { useEffect, useState } from 'react'
+import './App.css'
+import { 
+  Mountain, 
+  Camera, 
+  BookOpen, 
   User,
   Calendar,
   TrendingUp,
@@ -242,6 +248,11 @@ function App() {
                 <div className="box-header flex items-center justify-between">
                   <span>Recent Projects</span>
                   <button
+              {/* Recent Projects */}
+              <div className="box">
+                <div className="box-header flex items-center justify-between">
+                  <span>Recent Projects</span>
+                  <button 
                     onClick={() => setActiveTab('projects')}
                     className="text-[var(--link)] text-xs hover:underline"
                   >
@@ -257,6 +268,20 @@ function App() {
                         <th>Project</th>
                         <th>Region</th>
                         <th>Date</th>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th>Region</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {peaks.slice(0, 5).map((peak, i) => (
+                      <tr key={i} className="cursor-pointer">
+                        <td className="text-[var(--link)]">{peak.name}</td>
+                        <td>{peak.elevation}</td>
+                        <td>{peak.date}</td>
                       </tr>
                     </thead>
                     <tbody>
@@ -307,6 +332,7 @@ function App() {
               <div className="box-header flex items-center justify-between">
                 <span>Latest Photos</span>
                 <button
+                <button 
                   onClick={() => setActiveTab('photos')}
                   className="text-[var(--link)] text-xs hover:underline"
                 >
@@ -339,6 +365,7 @@ function App() {
           </div>
         )}
 
+        {/* PROJECTS TAB */}
         {activeTab === 'projects' && (
           <div className="box">
             <div className="box-header">Projects</div>
@@ -355,6 +382,30 @@ function App() {
                       <th>Location</th>
                       <th>Category</th>
                       <th>Date</th>
+              <p className="text-[var(--text-secondary)] text-sm mb-4">
+                A running list of ongoing and completed field projects, sorted by date.
+                Select any entry to review notes, location details, and related trip context.
+              </p>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Project</th>
+                    <th>Distance / Gain</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {peaks.map((peak, i) => (
+                    <tr key={i}>
+                      <td className="text-[var(--text-muted)]">{i + 1}</td>
+                      <td className="text-[var(--link)] cursor-pointer hover:underline">{peak.name}</td>
+                      <td>{peak.elevation}</td>
+                      <td>{peak.location}</td>
+                      <td><span className="tag">{peak.type}</span></td>
+                      <td>{peak.date}</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -387,6 +438,9 @@ function App() {
                     Detailed accounts of selected trips including route conditions, gear used, and lessons learned.
                   </p>
                 )}
+                <p className="text-[var(--text-secondary)] text-sm mb-4">
+                  Detailed accounts of selected trips including route conditions, gear used, and lessons learned.
+                </p>
               </div>
             </div>
             {tripReports.map((report) => (
@@ -459,6 +513,7 @@ function App() {
           </div>
         )}
 
+        {/* PHOTOS TAB */}
         {activeTab === 'photos' && (
           <div className="space-y-4">
             <div className="box">
@@ -499,6 +554,30 @@ function App() {
             )}
           </div>
         )}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {galleryImages.map((img, i) => (
+                <div key={i} className="box p-2">
+                  <div 
+                    className="thumb cursor-pointer mb-2"
+                    onClick={() => setSelectedImage(img.src)}
+                  >
+                    <img 
+                      src={img.src} 
+                      alt={img.caption}
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                  <div className="text-sm text-[var(--text-primary)]">{img.caption}</div>
+                  <div className="text-xs text-[var(--text-muted)] flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {img.date}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </main>
 
       <footer className="footer">
