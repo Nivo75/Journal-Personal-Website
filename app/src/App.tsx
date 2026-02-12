@@ -1,102 +1,107 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
-import { 
-  Mountain, 
-  Map, 
-  Camera, 
-  BookOpen, 
-  Mail, 
+import {
+  Mountain,
+  Camera,
+  BookOpen,
   User,
   Calendar,
   TrendingUp,
   Compass,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react'
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty'
+import profileContent from './content/profile.json'
+import projectsContent from './content/projects.json'
+import tripsContent from './content/trips.json'
+import photosContent from './content/photos.json'
+
+type Project = { name: string; elevation: string; location: string; date: string; type: string }
+type TripReport = { title: string; date: string; views: number; comments: number }
+type GalleryImage = { src: string; caption: string; date: string }
+type SiteStats = {
+  peaksClimbed: number
+  totalElevation: string
+  tripReports: number
+  photos: number
+  memberSince: string
+  homeBase: string
+}
+type JournalIndexItem = { slug: string; title: string; date: string; tags: string[]; file: string }
+
+const toItems = <T,>(value: unknown): T[] =>
+  Array.isArray(value)
+    ? value as T[]
+    : (typeof value === 'object' && value !== null && Array.isArray((value as { items?: unknown[] }).items)
+      ? ((value as { items: T[] }).items)
+      : [])
+
+const EMPTY_STATS: SiteStats = {
+  peaksClimbed: Number(profileContent.peaksClimbed ?? 0),
+  totalElevation: String(profileContent.totalElevation ?? '0 ft'),
+  tripReports: Number(profileContent.tripReports ?? 0),
+  photos: Number(profileContent.photos ?? 0),
+  memberSince: String(profileContent.memberSince ?? '—'),
+  homeBase: String(profileContent.homeBase ?? '—'),
+}
+
+const emptyState = (title: string, description: string) => (
+  <Empty className="border border-dashed border-[var(--border)] bg-[var(--bg-primary)] p-6">
+    <EmptyHeader>
+      <EmptyMedia variant="icon">
+        <Mountain className="size-5" />
+      </EmptyMedia>
+      <EmptyTitle>{title}</EmptyTitle>
+      <EmptyDescription>{description}</EmptyDescription>
+    </EmptyHeader>
+  </Empty>
+)
 
 function App() {
   const [activeTab, setActiveTab] = useState('home')
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
-  type Peak = { name: string; elevation: string; location: string; date: string; type: string }
-  type TripReport = { title: string; date: string; views: number; comments: number }
-  type GalleryImage = { src: string; caption: string; date: string }
-  type SiteStats = {
-    peaksClimbed: number
-    totalElevation: string
-    tripReports: number
-    photos: number
-    memberSince: string
-    homeBase: string
-  }
-
-  type JournalIndexItem = { slug: string; title: string; date: string; tags: string[]; file: string }
-
-  const defaultData = useMemo(() => {
-    const peaks: Peak[] = [
-      { name: 'Mount Rainier', elevation: '14,411 ft', location: 'Washington', date: '2023-07-15', type: 'Volcano' },
-      { name: 'Mount Hood', elevation: '11,249 ft', location: 'Oregon', date: '2023-06-22', type: 'Volcano' },
-      { name: 'Mount Adams', elevation: '12,281 ft', location: 'Washington', date: '2022-08-30', type: 'Volcano' },
-      { name: 'Mount St. Helens', elevation: '8,363 ft', location: 'Washington', date: '2022-05-14', type: 'Volcano' },
-      { name: 'Mount Shasta', elevation: '14,179 ft', location: 'California', date: '2021-09-03', type: 'Volcano' },
-    ]
-
-    const tripReports: TripReport[] = [
-      { title: 'Winter Ascent of Mount Hood', date: 'Dec 12, 2023', views: 1247, comments: 23 },
-      { title: 'Solo Traverse of the Cascades', date: 'Nov 28, 2023', views: 892, comments: 15 },
-      { title: 'Rainier Disappointment Cleaver Route', date: 'Oct 15, 2023', views: 2156, comments: 41 },
-      { title: 'Backpacking the Wonderland Trail', date: 'Sep 02, 2023', views: 1567, comments: 28 },
-    ]
-
-    const galleryImages: GalleryImage[] = [
-      { src: '/gallery-1.jpg', caption: 'Summit view, Mount Rainier', date: 'Jul 2023' },
-      { src: '/gallery-2.jpg', caption: 'Early morning start', date: 'Jun 2023' },
-      { src: '/gallery-3.jpg', caption: 'Traversing the glacier', date: 'Aug 2022' },
-      { src: '/gallery-4.jpg', caption: 'Camp at 10,000 ft', date: 'Sep 2022' },
-      { src: '/gallery-5.jpg', caption: 'Route finding', date: 'May 2022' },
-      { src: '/gallery-6.jpg', caption: 'Descent at dusk', date: 'Jul 2021' },
-    ]
-
-    const stats: SiteStats = {
-      peaksClimbed: 47,
-      totalElevation: '312,450 ft',
-      tripReports: 23,
-      photos: 847,
-      memberSince: '2018',
-      homeBase: 'Portland, OR',
-    }
-
-    return { peaks, tripReports, galleryImages, stats }
-  }, [])
-
-  const [peaks, setPeaks] = useState<Peak[]>(defaultData.peaks)
-  const [tripReports, setTripReports] = useState<TripReport[]>(defaultData.tripReports)
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(defaultData.galleryImages)
-  const [stats, setStats] = useState<SiteStats>(defaultData.stats)
+  const [projects, setProjects] = useState<Project[]>(toItems<Project>(projectsContent))
+  const [tripReports, setTripReports] = useState<TripReport[]>(toItems<TripReport>(tripsContent))
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(toItems<GalleryImage>(photosContent))
+  const [stats, setStats] = useState<SiteStats>(EMPTY_STATS)
 
   const [journalIndex, setJournalIndex] = useState<JournalIndexItem[]>([])
   const [activeJournalSlug, setActiveJournalSlug] = useState<string | null>(null)
   const [activeJournalText, setActiveJournalText] = useState<string>('')
 
   useEffect(() => {
-    // Content is stored as static JSON so a Git-backed CMS (Decap) can edit it.
-    // If fetch fails (e.g., first run), we fall back to the built-in defaults.
     const load = async () => {
       try {
-        const [peaksRes, tripsRes, galleryRes, statsRes] = await Promise.all([
+        const [projectsRes, tripsRes, photosRes, statsRes] = await Promise.all([
           fetch('/content/peaks.json'),
           fetch('/content/tripReports.json'),
           fetch('/content/gallery.json'),
           fetch('/content/site.json'),
         ])
 
-        const toItems = <T,>(v: any): T[] => (Array.isArray(v) ? v : (v?.items ?? []))
-
-        if (peaksRes.ok) setPeaks(toItems<Peak>(await peaksRes.json()))
+        if (projectsRes.ok) setProjects(toItems<Project>(await projectsRes.json()))
         if (tripsRes.ok) setTripReports(toItems<TripReport>(await tripsRes.json()))
-        if (galleryRes.ok) setGalleryImages(toItems<GalleryImage>(await galleryRes.json()))
-        if (statsRes.ok) setStats(await statsRes.json())
+        if (photosRes.ok) setGalleryImages(toItems<GalleryImage>(await photosRes.json()))
+        if (statsRes.ok) {
+          const incoming = await statsRes.json()
+          setStats({
+            peaksClimbed: Number(incoming?.peaksClimbed ?? 0),
+            totalElevation: String(incoming?.totalElevation ?? '0 ft'),
+            tripReports: Number(incoming?.tripReports ?? 0),
+            photos: Number(incoming?.photos ?? 0),
+            memberSince: String(incoming?.memberSince ?? '—'),
+            homeBase: String(incoming?.homeBase ?? '—'),
+          })
+        }
       } catch {
-        // no-op
+        // no-op: local src/content defaults remain active
       }
     }
 
@@ -104,13 +109,12 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // Load journal index (generated during build) so you can add entries via CMS.
     const loadJournalIndex = async () => {
       try {
         const res = await fetch('/journal/index.json')
         if (!res.ok) return
         const json = await res.json()
-        const items: JournalIndexItem[] = Array.isArray(json) ? json : (json?.items ?? [])
+        const items: JournalIndexItem[] = toItems<JournalIndexItem>(json)
         setJournalIndex(items)
         if (!activeJournalSlug && items.length) {
           setActiveJournalSlug(items[0].slug)
@@ -121,20 +125,26 @@ function App() {
     }
 
     loadJournalIndex()
-  }, [])
+  }, [activeJournalSlug])
 
   useEffect(() => {
     const loadEntry = async () => {
-      if (!activeJournalSlug) return
+      if (!activeJournalSlug) {
+        setActiveJournalText('')
+        return
+      }
+
       const item = journalIndex.find((x) => x.slug === activeJournalSlug)
-      if (!item) return
+      if (!item) {
+        setActiveJournalText('')
+        return
+      }
 
       try {
         const res = await fetch(item.file)
         if (!res.ok) return
         const raw = await res.text()
 
-        // Strip frontmatter for display
         const withoutFrontmatter = raw.replace(/^---[\s\S]*?---\s*/m, '')
         setActiveJournalText(withoutFrontmatter.trim())
       } catch {
@@ -147,14 +157,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
-      {/* Header */}
       <header className="bg-[var(--header-bg)] border-b border-[var(--border)]">
         <div className="max-w-6xl mx-auto px-4">
-          {/* Top bar */}
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center gap-3">
               <Mountain className="w-6 h-6 text-[var(--accent)]" />
-              <h1 className="text-xl font-bold tracking-tight">PEAKBAGGER LOG</h1>
+              <h1 className="text-xl font-bold tracking-tight">NIVO JOURNAL</h1>
             </div>
             <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
               <span>Member since {stats.memberSince}</span>
@@ -162,17 +170,14 @@ function App() {
               <span>{stats.homeBase}</span>
             </div>
           </div>
-          
-          {/* Navigation */}
+
           <nav className="flex gap-1 -mb-px">
             {[
               { id: 'home', label: 'Home', icon: Compass },
-              { id: 'peaks', label: 'Peak List', icon: Mountain },
-              { id: 'trips', label: 'Trip Reports', icon: BookOpen },
               { id: 'journal', label: 'Journal', icon: Calendar },
-              { id: 'gallery', label: 'Photos', icon: Camera },
-              { id: 'map', label: 'Map', icon: Map },
-              { id: 'contact', label: 'Contact', icon: Mail },
+              { id: 'trips', label: 'Trips', icon: BookOpen },
+              { id: 'projects', label: 'Projects', icon: Mountain },
+              { id: 'photos', label: 'Photos', icon: Camera },
             ].map((item) => (
               <button
                 key={item.id}
@@ -187,33 +192,27 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
-        
-        {/* HOME TAB */}
         {activeTab === 'home' && (
           <div className="space-y-6">
-            {/* Welcome Box */}
             <div className="box">
-              <div className="box-header">Welcome to My Peakbagger Log</div>
+              <div className="box-header">Welcome to My Personal Site</div>
               <div className="p-4">
                 <p className="text-[var(--text-secondary)] mb-4">
-                  This is a record of my mountain climbing activities in the Pacific Northwest and beyond. 
-                  I've been peak bagging since 2018, focusing primarily on volcanoes and major summits in 
-                  the Cascade Range. All elevations are in feet.
+                  This is a home for my notes, adventures, and projects in the Pacific Northwest and beyond.
+                  I use it to keep a running record of experiences, route details, and ideas over time.
                 </p>
                 <p className="text-[var(--text-secondary)]">
-                  Use the navigation above to view my peak list, trip reports, photos, and route maps. 
-                  Feel free to contact me if you have questions about any of the routes or conditions.
+                  Use the navigation above to explore journal entries, trip write-ups, project logs,
+                  and photos from the trail.
                 </p>
               </div>
             </div>
 
-            {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="box text-center p-4">
                 <div className="stat-number">{stats.peaksClimbed}</div>
-                <div className="stat-label">Peaks Climbed</div>
+                <div className="stat-label">Routes Completed</div>
               </div>
               <div className="box text-center p-4">
                 <div className="stat-number">{stats.totalElevation}</div>
@@ -230,143 +229,154 @@ function App() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Recent Peaks */}
               <div className="box">
                 <div className="box-header flex items-center justify-between">
-                  <span>Recent Peaks</span>
-                  <button 
-                    onClick={() => setActiveTab('peaks')}
+                  <span>Recent Projects</span>
+                  <button
+                    onClick={() => setActiveTab('projects')}
                     className="text-[var(--link)] text-xs hover:underline"
                   >
                     View All
                   </button>
                 </div>
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Peak</th>
-                      <th>Elevation</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {peaks.slice(0, 5).map((peak, i) => (
-                      <tr key={i} className="cursor-pointer">
-                        <td className="text-[var(--link)]">{peak.name}</td>
-                        <td>{peak.elevation}</td>
-                        <td>{peak.date}</td>
+                {projects.length === 0 ? (
+                  <div className="p-4">{emptyState('No projects yet', 'First project entries are coming soon.')}</div>
+                ) : (
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Project</th>
+                        <th>Region</th>
+                        <th>Date</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {projects.slice(0, 5).map((project, i) => (
+                        <tr key={i} className="cursor-pointer">
+                          <td className="text-[var(--link)]">{project.name}</td>
+                          <td>{project.location}</td>
+                          <td>{project.date}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
 
-              {/* Recent Trip Reports */}
               <div className="box">
                 <div className="box-header flex items-center justify-between">
                   <span>Recent Trip Reports</span>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('trips')}
                     className="text-[var(--link)] text-xs hover:underline"
                   >
                     View All
                   </button>
                 </div>
-                <ul className="list-plain">
-                  {tripReports.map((report, i) => (
-                    <li key={i} className="flex items-center justify-between py-3">
-                      <div>
-                        <div className="text-[var(--link)] text-sm">{report.title}</div>
-                        <div className="text-[var(--text-muted)] text-xs">{report.date}</div>
-                      </div>
-                      <div className="text-right text-xs text-[var(--text-muted)]">
-                        <div>{report.views} views</div>
-                        <div>{report.comments} comments</div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                {tripReports.length === 0 ? (
+                  <div className="p-4">{emptyState('No trips yet', 'First entries are coming soon.')}</div>
+                ) : (
+                  <ul className="list-plain">
+                    {tripReports.slice(0, 5).map((report, i) => (
+                      <li key={i} className="flex items-center justify-between py-3">
+                        <div>
+                          <div className="text-[var(--link)] text-sm">{report.title}</div>
+                          <div className="text-[var(--text-muted)] text-xs">{report.date}</div>
+                        </div>
+                        <div className="text-right text-xs text-[var(--text-muted)]">
+                          <div>{report.views} views</div>
+                          <div>{report.comments} comments</div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
 
-            {/* Latest Photos Preview */}
             <div className="box">
               <div className="box-header flex items-center justify-between">
                 <span>Latest Photos</span>
-                <button 
-                  onClick={() => setActiveTab('gallery')}
+                <button
+                  onClick={() => setActiveTab('photos')}
                   className="text-[var(--link)] text-xs hover:underline"
                 >
                   View Gallery
                 </button>
               </div>
               <div className="p-4">
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                  {galleryImages.map((img, i) => (
-                    <div 
-                      key={i} 
-                      className="thumb cursor-pointer"
-                      onClick={() => setSelectedImage(img.src)}
-                    >
-                      <img 
-                        src={img.src} 
-                        alt={img.caption}
-                        className="w-full h-20 object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
+                {galleryImages.length === 0 ? (
+                  emptyState('No photos yet', 'A photo gallery is coming soon.')
+                ) : (
+                  <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                    {galleryImages.map((img, i) => (
+                      <div
+                        key={i}
+                        className="thumb cursor-pointer"
+                        onClick={() => setSelectedImage(img.src)}
+                      >
+                        <img
+                          src={img.src}
+                          alt={img.caption}
+                          className="w-full h-20 object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
         )}
 
-        {/* PEAKS TAB */}
-        {activeTab === 'peaks' && (
+        {activeTab === 'projects' && (
           <div className="box">
-            <div className="box-header">Complete Peak List</div>
+            <div className="box-header">Projects</div>
             <div className="p-4">
-              <p className="text-[var(--text-secondary)] text-sm mb-4">
-                Below is the complete list of peaks I've summited, sorted by date. 
-                Click on any peak name to view detailed route information and trip conditions.
-              </p>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Peak Name</th>
-                    <th>Elevation</th>
-                    <th>Location</th>
-                    <th>Type</th>
-                    <th>Date Summited</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {peaks.map((peak, i) => (
-                    <tr key={i}>
-                      <td className="text-[var(--text-muted)]">{i + 1}</td>
-                      <td className="text-[var(--link)] cursor-pointer hover:underline">{peak.name}</td>
-                      <td>{peak.elevation}</td>
-                      <td>{peak.location}</td>
-                      <td><span className="tag">{peak.type}</span></td>
-                      <td>{peak.date}</td>
+              {projects.length === 0 ? (
+                emptyState('No projects yet', 'No project logs published yet — check back soon.')
+              ) : (
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Project</th>
+                      <th>Distance / Gain</th>
+                      <th>Location</th>
+                      <th>Category</th>
+                      <th>Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {projects.map((project, i) => (
+                      <tr key={i}>
+                        <td className="text-[var(--text-muted)]">{i + 1}</td>
+                        <td className="text-[var(--link)] cursor-pointer hover:underline">{project.name}</td>
+                        <td>{project.elevation}</td>
+                        <td>{project.location}</td>
+                        <td><span className="tag">{project.type}</span></td>
+                        <td>{project.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         )}
 
-        {/* TRIPS TAB */}
         {activeTab === 'trips' && (
           <div className="space-y-4">
             <div className="box">
               <div className="box-header">Trip Reports</div>
               <div className="p-4">
-                <p className="text-[var(--text-secondary)] text-sm mb-4">
-                  Detailed accounts of selected climbs including route conditions, gear used, and lessons learned.
-                </p>
+                {tripReports.length === 0 ? (
+                  emptyState('No trips yet', 'No trip reports published yet — first entries coming soon.')
+                ) : (
+                  <p className="text-[var(--text-secondary)] text-sm mb-4">
+                    Detailed accounts of selected trips including route conditions, gear used, and lessons learned.
+                  </p>
+                )}
               </div>
             </div>
             {tripReports.map((report, i) => (
@@ -379,7 +389,7 @@ function App() {
                     <span className="tag">{report.date}</span>
                   </div>
                   <p className="text-[var(--text-secondary)] text-sm mb-3">
-                    Trip report detailing the route, conditions, and key decision points during this climb. 
+                    Trip report detailing the route, conditions, and key decision points from the outing.
                     Includes photos and GPS track where available.
                   </p>
                   <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
@@ -402,16 +412,13 @@ function App() {
           </div>
         )}
 
-        {/* JOURNAL TAB */}
         {activeTab === 'journal' && (
           <div className="grid md:grid-cols-3 gap-6">
             <div className="box md:col-span-1">
               <div className="box-header">Journal Entries</div>
               <div className="p-3">
                 {journalIndex.length === 0 ? (
-                  <div className="text-sm text-[var(--text-muted)]">
-                    No entries yet. Add one from <span className="font-mono">/admin</span>.
-                  </div>
+                  emptyState('No journal entries yet', 'Add your first entry from /admin.')
                 ) : (
                   <ul className="list-plain">
                     {journalIndex.map((e) => (
@@ -442,137 +449,64 @@ function App() {
           </div>
         )}
 
-        {/* GALLERY TAB */}
-        {activeTab === 'gallery' && (
+        {activeTab === 'photos' && (
           <div className="space-y-4">
             <div className="box">
               <div className="box-header">Photo Gallery</div>
               <div className="p-4">
                 <p className="text-[var(--text-secondary)] text-sm">
-                  Selected photos from various climbs. Click on any image to view full size.
+                  Selected photos from recent trips and projects. Click on any image to view full size.
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {galleryImages.map((img, i) => (
-                <div key={i} className="box p-2">
-                  <div 
-                    className="thumb cursor-pointer mb-2"
-                    onClick={() => setSelectedImage(img.src)}
-                  >
-                    <img 
-                      src={img.src} 
-                      alt={img.caption}
-                      className="w-full h-48 object-cover"
-                    />
-                  </div>
-                  <div className="text-sm text-[var(--text-primary)]">{img.caption}</div>
-                  <div className="text-xs text-[var(--text-muted)] flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {img.date}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* MAP TAB */}
-        {activeTab === 'map' && (
-          <div className="box">
-            <div className="box-header">Peak Map</div>
-            <div className="p-4">
-              <p className="text-[var(--text-secondary)] text-sm mb-4">
-                Map showing locations of climbed peaks in the Pacific Northwest.
-              </p>
-              <div className="bg-[var(--bg-tertiary)] border border-[var(--border)] h-96 flex items-center justify-center">
-                <div className="text-center text-[var(--text-muted)]">
-                  <Map className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>Interactive map would be displayed here</p>
-                  <p className="text-xs mt-2">Showing {stats.peaksClimbed} peak locations</p>
-                </div>
+            {galleryImages.length === 0 ? (
+              <div className="box p-4">
+                {emptyState('No photos yet', 'No photos published yet — first uploads are coming soon.')}
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* CONTACT TAB */}
-        {activeTab === 'contact' && (
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="box">
-              <div className="box-header">Contact Information</div>
-              <div className="p-4 space-y-4">
-                <p className="text-[var(--text-secondary)] text-sm">
-                  Have questions about a route? Want to climb together? Feel free to reach out.
-                </p>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-4 h-4 text-[var(--accent)]" />
-                    <span className="text-sm">climber@peakbagger.log</span>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {galleryImages.map((img, i) => (
+                  <div key={i} className="box p-2">
+                    <div
+                      className="thumb cursor-pointer mb-2"
+                      onClick={() => setSelectedImage(img.src)}
+                    >
+                      <img
+                        src={img.src}
+                        alt={img.caption}
+                        className="w-full h-48 object-cover"
+                      />
+                    </div>
+                    <div className="text-sm text-[var(--text-primary)]">{img.caption}</div>
+                    <div className="text-xs text-[var(--text-muted)] flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {img.date}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Map className="w-4 h-4 text-[var(--accent)]" />
-                    <span className="text-sm">Portland, Oregon</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-[var(--accent)]" />
-                    <span className="text-sm">Member since 2018</span>
-                  </div>
-                </div>
+                ))}
               </div>
-            </div>
-
-            <div className="box">
-              <div className="box-header">Send Message</div>
-              <div className="p-4">
-                <form 
-                  className="space-y-4"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    alert('Message sent!')
-                  }}
-                >
-                  <div>
-                    <label className="block text-xs text-[var(--text-secondary)] mb-1">Name</label>
-                    <input type="text" className="input" placeholder="Your name" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-[var(--text-secondary)] mb-1">Email</label>
-                    <input type="email" className="input" placeholder="your@email.com" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-[var(--text-secondary)] mb-1">Message</label>
-                    <textarea className="input resize-none" rows={4} placeholder="Your message..." />
-                  </div>
-                  <button type="submit" className="btn btn-primary w-full">
-                    Send Message
-                  </button>
-                </form>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </main>
 
-      {/* Footer */}
       <footer className="footer">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Mountain className="w-4 h-4 text-[var(--accent)]" />
-              <span className="font-semibold">PEAKBAGGER LOG</span>
+              <span className="font-semibold">Nivo Journal</span>
             </div>
             <div className="text-center md:text-right">
-              <p>© 2024 Peakbagger Log. All rights reserved.</p>
-              <p className="mt-1">Climb safe, climb smart.</p>
+              <p>© 2024 Nivo Journal. All rights reserved.</p>
+              <p className="mt-1">Document often, explore more.</p>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* Image Modal */}
       {selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setSelectedImage(null)}
         >
