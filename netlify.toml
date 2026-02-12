@@ -1,8 +1,8 @@
 [build]
   base = "app"
+  publish = "dist"
   command = "npm ci && npm run build"
-  publish = "app/dist"
-
+  
 # SPA fallback (so refreshing a tab doesn't 404)
 [[redirects]]
   from = "/*"
