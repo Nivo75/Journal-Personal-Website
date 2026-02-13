@@ -173,17 +173,13 @@ function App() {
 
           <nav className="flex gap-1 -mb-px">
             {[
+              { id: 'home', label: 'Home', icon: Compass },
               { id: 'overview', label: 'Overview', icon: Compass },
               { id: 'journal', label: 'Journal', icon: Calendar },
               { id: 'adventures', label: 'Adventures', icon: BookOpen },
               { id: 'projects', label: 'Projects', icon: Mountain },
-              { id: 'stats-map', label: 'Stats+Map', icon: TrendingUp },
-              { id: 'gallery', label: 'Gallery', icon: Camera },
-              { id: 'home', label: 'Home', icon: Compass },
-              { id: 'journal', label: 'Journal', icon: Calendar },
-              { id: 'trips', label: 'Trips', icon: BookOpen },
-              { id: 'projects', label: 'Projects', icon: Mountain },
               { id: 'photos', label: 'Photos', icon: Camera },
+              { id: 'stats-map', label: 'Stats+Map', icon: TrendingUp },
             ].map((item) => (
               <button
                 key={item.id}
@@ -217,9 +213,13 @@ function App() {
                 <p className="text-xs text-[var(--text-muted)] mt-2">Overview hero media: /media/hero.mp4</p>
               </div>
             </div>
-            {/* Welcome Box */}
+          </div>
+        )}
+
+        {/* HOME TAB */}
         {activeTab === 'home' && (
           <div className="space-y-6">
+            {/* Welcome Box */}
             <div className="box">
               <div className="box-header">Welcome to My Personal Site</div>
               <div className="p-4">
@@ -288,37 +288,14 @@ function App() {
               {/* Recent Adventures */}
               <div className="box">
                 <div className="box-header flex items-center justify-between">
-                  <span>Recent Adventures</span>
-                  <button 
-                    onClick={() => setActiveTab('adventures')}
-              <div className="box">
-                <div className="box-header flex items-center justify-between">
                   <span>Recent Trip Reports</span>
                   <button
-                    onClick={() => setActiveTab('trips')}
+                    onClick={() => setActiveTab('adventures')}
                     className="text-[var(--link)] text-xs hover:underline"
                   >
                     View All
                   </button>
                 </div>
-                <ul className="list-plain">
-                  {tripReports.length === 0 ? (
-              <div className="box">
-                <div className="p-4 text-sm text-[var(--text-muted)]">No adventures yet — first entries coming soon.</div>
-              </div>
-            ) : tripReports.map((report, i) => (
-                    <li key={i} className="flex items-center justify-between py-3">
-                      <div>
-                        <div className="text-[var(--link)] text-sm">{report.title}</div>
-                        <div className="text-[var(--text-muted)] text-xs">{report.date}</div>
-                      </div>
-                      <div className="text-right text-xs text-[var(--text-muted)]">
-                        <div>{report.views} views</div>
-                        <div>{report.comments} comments</div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
                 {tripReports.length === 0 ? (
                   <div className="p-4">{emptyState('No trips yet', 'First entries are coming soon.')}</div>
                 ) : (
@@ -384,7 +361,7 @@ function App() {
                 A running list of ongoing and completed field projects, sorted by date.
                 Select any entry to review notes, location details, and related trip context.
               </p>
-              {peaks.length === 0 ? (
+              {projects.length === 0 ? (
                 <div className="p-4 text-sm text-[var(--text-muted)]">No projects yet — first entries coming soon.</div>
               ) : (
               <table className="table">
@@ -418,7 +395,6 @@ function App() {
 
         {/* ADVENTURES TAB */}
         {activeTab === 'adventures' && (
-        {activeTab === 'trips' && (
           <div className="space-y-4">
             <div className="box">
               <div className="box-header">Adventures</div>
@@ -432,38 +408,40 @@ function App() {
               <div className="box">
                 <div className="p-4 text-sm text-[var(--text-muted)]">No adventures yet — first entries coming soon.</div>
               </div>
-            ) : tripReports.map((report, i) => (
-              <div key={i} className="box">
-            {tripReports.map((report) => (
-              <div key={`${report.title}-${report.date}`} className="box">
-                <div className="p-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-[var(--link)] cursor-pointer hover:underline">
-                      {report.title}
-                    </h3>
-                    <span className="tag">{report.date}</span>
+            ) : (
+              <>
+                {tripReports.map((report) => (
+                  <div key={`${report.title}-${report.date}`} className="box">
+                    <div className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <h3 className="text-lg font-semibold text-[var(--link)] cursor-pointer hover:underline">
+                          {report.title}
+                        </h3>
+                        <span className="tag">{report.date}</span>
+                      </div>
+                      <p className="text-[var(--text-secondary)] text-sm mb-3">
+                        Trip report detailing the route, conditions, and key decision points from the outing.
+                        Includes photos and GPS track where available.
+                      </p>
+                      <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
+                        <span className="flex items-center gap-1">
+                          <TrendingUp className="w-3 h-3" />
+                          {report.views} views
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          {report.comments} comments
+                        </span>
+                        <button className="text-[var(--link)] hover:underline flex items-center gap-1 ml-auto">
+                          Read Entry
+                          <ExternalLink className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-[var(--text-secondary)] text-sm mb-3">
-                    Trip report detailing the route, conditions, and key decision points from the outing.
-                    Includes photos and GPS track where available.
-                  </p>
-                  <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
-                    <span className="flex items-center gap-1">
-                      <TrendingUp className="w-3 h-3" />
-                      {report.views} views
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <User className="w-3 h-3" />
-                      {report.comments} comments
-                    </span>
-                    <button className="text-[var(--link)] hover:underline flex items-center gap-1 ml-auto">
-                      Read Entry
-                      <ExternalLink className="w-3 h-3" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            )}
           </div>
         )}
 
