@@ -50,10 +50,11 @@ function App() {
     return { peaks, tripReports, galleryImages, stats }
   }, [])
 
-  const [peaks, setPeaks] = useState<Peak[]>(defaultData.peaks)
-  const [tripReports, setTripReports] = useState<TripReport[]>(defaultData.tripReports)
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(defaultData.galleryImages)
-  const [stats, setStats] = useState<SiteStats>(defaultData.stats)
+  const [peaks] = useState<Peak[]>(defaultData.peaks)
+  const [projects, setProjects] = useState<Project[]>(toItems<Project>(projectsContent))
+  const [tripReports, setTripReports] = useState<TripReport[]>(toItems<TripReport>(tripsContent))
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(toItems<GalleryImage>(photosContent))
+  const [stats, setStats] = useState<SiteStats>(EMPTY_STATS)
 
   const [journalIndex, setJournalIndex] = useState<JournalIndexItem[]>([])
   const [activeJournalSlug, setActiveJournalSlug] = useState<string | null>(null)
@@ -62,21 +63,29 @@ function App() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [peaksRes, tripsRes, galleryRes, statsRes] = await Promise.all([
-          fetch('/content/peaks.json'),
-          fetch('/content/tripReports.json'),
-          fetch('/content/gallery.json'),
-          fetch('/content/site.json'),
+        const [projectsRes, tripsRes, photosRes, statsRes] = await Promise.all([
+          fetch('/content/projects.json'),
+          fetch('/content/trips.json'),
+          fetch('/content/photos.json'),
+          fetch('/content/profile.json'),
         ])
 
-        const toItems = <T,>(v: any): T[] => (Array.isArray(v) ? v : (v?.items ?? []))
-
-        if (peaksRes.ok) setPeaks(toItems<Peak>(await peaksRes.json()))
+        if (projectsRes.ok) setProjects(toItems<Project>(await projectsRes.json()))
         if (tripsRes.ok) setTripReports(toItems<TripReport>(await tripsRes.json()))
-        if (galleryRes.ok) setGalleryImages(toItems<GalleryImage>(await galleryRes.json()))
-        if (statsRes.ok) setStats(await statsRes.json())
+        if (photosRes.ok) setGalleryImages(toItems<GalleryImage>(await photosRes.json()))
+        if (statsRes.ok) {
+          const incoming = await statsRes.json()
+          setStats({
+            peaksClimbed: Number(incoming?.peaksClimbed ?? 0),
+            totalElevation: String(incoming?.totalElevation ?? '0 ft'),
+            tripReports: Number(incoming?.tripReports ?? 0),
+            photos: Number(incoming?.photos ?? 0),
+            memberSince: String(incoming?.memberSince ?? '—'),
+            homeBase: String(incoming?.homeBase ?? '—'),
+          })
+        }
       } catch {
-        // no-op
+        // no-op: local src/content defaults remain active
       }
     }
 
@@ -89,7 +98,7 @@ function App() {
         const res = await fetch('/journal/index.json')
         if (!res.ok) return
         const json = await res.json()
-        const items: JournalIndexItem[] = Array.isArray(json) ? json : (json?.items ?? [])
+        const items: JournalIndexItem[] = toItems<JournalIndexItem>(json)
         setJournalIndex(items)
         if (!activeJournalSlug && items.length) {
           setActiveJournalSlug(items[0].slug)
@@ -104,9 +113,16 @@ function App() {
 
   useEffect(() => {
     const loadEntry = async () => {
-      if (!activeJournalSlug) return
+      if (!activeJournalSlug) {
+        setActiveJournalText('')
+        return
+      }
+
       const item = journalIndex.find((x) => x.slug === activeJournalSlug)
-      if (!item) return
+      if (!item) {
+        setActiveJournalText('')
+        return
+      }
 
       try {
         const res = await fetch(item.file)
