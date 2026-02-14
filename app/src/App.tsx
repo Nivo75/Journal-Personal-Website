@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
+import { Overview } from './pages/Overview'
+import { Journal } from './pages/Journal'
+import { Adventures } from './pages/Adventures'
+import { Projects } from './pages/Projects'
+import { StatsMap } from './pages/StatsMap'
+import { Gallery } from './pages/Gallery'
+import type { GalleryImage, JournalIndexItem, Peak, SiteStats, TripReport } from './pages/types'
 import { 
   Mountain, 
   Camera, 
@@ -23,17 +30,6 @@ import tripsContent from './content/trips.json'
 import photosContent from './content/photos.json'
 
 type Project = { name: string; elevation: string; location: string; date: string; type: string }
-type TripReport = { title: string; date: string; views: number; comments: number }
-type GalleryImage = { src: string; caption: string; date: string }
-type SiteStats = {
-  peaksClimbed: number
-  totalElevation: string
-  tripReports: number
-  photos: number
-  memberSince: string
-  homeBase: string
-}
-type JournalIndexItem = { slug: string; title: string; date: string; tags: string[]; file: string }
 
 const toItems = <T,>(value: unknown): T[] =>
   Array.isArray(value)
@@ -64,9 +60,47 @@ const emptyState = (title: string, description: string) => (
 )
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home')
+  const [activeTab, setActiveTab] = useState('overview')
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
+  const defaultData = useMemo(() => {
+    const peaks: Peak[] = [
+      { name: 'Mount Rainier', elevation: '14,411 ft', location: 'Washington', date: '2023-07-15', type: 'Volcano' },
+      { name: 'Mount Hood', elevation: '11,249 ft', location: 'Oregon', date: '2023-06-22', type: 'Volcano' },
+      { name: 'Mount Adams', elevation: '12,281 ft', location: 'Washington', date: '2022-08-30', type: 'Volcano' },
+      { name: 'Mount St. Helens', elevation: '8,363 ft', location: 'Washington', date: '2022-05-14', type: 'Volcano' },
+      { name: 'Mount Shasta', elevation: '14,179 ft', location: 'California', date: '2021-09-03', type: 'Volcano' },
+    ]
+
+    const tripReports: TripReport[] = [
+      { title: 'Winter Ascent of Mount Hood', date: 'Dec 12, 2023', views: 1247, comments: 23 },
+      { title: 'Solo Traverse of the Cascades', date: 'Nov 28, 2023', views: 892, comments: 15 },
+      { title: 'Rainier Disappointment Cleaver Route', date: 'Oct 15, 2023', views: 2156, comments: 41 },
+      { title: 'Backpacking the Wonderland Trail', date: 'Sep 02, 2023', views: 1567, comments: 28 },
+    ]
+
+    const galleryImages: GalleryImage[] = [
+      { src: '/gallery-1.jpg', caption: 'Summit view, Mount Rainier', date: 'Jul 2023' },
+      { src: '/gallery-2.jpg', caption: 'Early morning start', date: 'Jun 2023' },
+      { src: '/gallery-3.jpg', caption: 'Traversing the glacier', date: 'Aug 2022' },
+      { src: '/gallery-4.jpg', caption: 'Camp at 10,000 ft', date: 'Sep 2022' },
+      { src: '/gallery-5.jpg', caption: 'Route finding', date: 'May 2022' },
+      { src: '/gallery-6.jpg', caption: 'Descent at dusk', date: 'Jul 2021' },
+    ]
+
+    const stats: SiteStats = {
+      peaksClimbed: 47,
+      totalElevation: '312,450 ft',
+      tripReports: 23,
+      photos: 847,
+      memberSince: '2018',
+      homeBase: 'Portland, OR',
+    }
+
+    return { peaks, tripReports, galleryImages, stats }
+  }, [])
+
+  const [peaks] = useState<Peak[]>(defaultData.peaks)
   const [projects, setProjects] = useState<Project[]>(toItems<Project>(projectsContent))
   const [tripReports, setTripReports] = useState<TripReport[]>(toItems<TripReport>(tripsContent))
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(toItems<GalleryImage>(photosContent))
@@ -173,6 +207,12 @@ function App() {
 
           <nav className="flex gap-1 -mb-px">
             {[
+              { id: 'overview', label: 'Overview', icon: Compass },
+              { id: 'journal', label: 'Journal', icon: Calendar },
+              { id: 'adventures', label: 'Adventures', icon: BookOpen },
+              { id: 'projects', label: 'Projects', icon: Mountain },
+              { id: 'stats-map', label: 'Stats+Map', icon: TrendingUp },
+              { id: 'gallery', label: 'Gallery', icon: Camera },
               { id: 'home', label: 'Home', icon: Compass },
               { id: 'journal', label: 'Journal', icon: Calendar },
               { id: 'trips', label: 'Trips', icon: BookOpen },
@@ -193,6 +233,37 @@ function App() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-6">
+        {activeTab === 'overview' && (
+          <Overview
+            stats={stats}
+            peaks={peaks}
+            tripReports={tripReports}
+            galleryImages={galleryImages}
+            onOpenProjects={() => setActiveTab('projects')}
+            onOpenAdventures={() => setActiveTab('adventures')}
+            onOpenGallery={() => setActiveTab('gallery')}
+            onSelectImage={setSelectedImage}
+          />
+        )}
+
+        {activeTab === 'journal' && (
+          <Journal
+            journalIndex={journalIndex}
+            activeJournalSlug={activeJournalSlug}
+            activeJournalText={activeJournalText}
+            onSelectJournal={setActiveJournalSlug}
+          />
+        )}
+
+        {activeTab === 'adventures' && <Adventures tripReports={tripReports} />}
+
+        {activeTab === 'projects' && <Projects peaks={peaks} />}
+
+        {activeTab === 'stats-map' && <StatsMap stats={stats} />}
+
+        {activeTab === 'gallery' && (
+          <Gallery galleryImages={galleryImages} onSelectImage={setSelectedImage} />
+        )}
         {activeTab === 'home' && (
           <div className="space-y-6">
             <div className="box">
