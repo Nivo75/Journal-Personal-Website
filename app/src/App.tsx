@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { Camera, Calendar, Compass, Mountain, TrendingUp, BookOpen } from 'lucide-react'
 import { Overview } from './pages/Overview'
 import { Journal } from './pages/Journal'
 import { Adventures } from './pages/Adventures'
 import { Projects } from './pages/Projects'
 import { StatsMap } from './pages/StatsMap'
 import { Gallery } from './pages/Gallery'
-import { type GalleryImage, type JournalIndexItem, type Peak, type SiteStats, type TripReport } from './pages/types'
+import type { GalleryImage, JournalIndexItem, Peak, SiteStats, TripReport } from './pages/types'
 import { 
   Mountain, 
   Camera, 
@@ -31,17 +30,6 @@ import tripsContent from './content/trips.json'
 import photosContent from './content/photos.json'
 
 type Project = { name: string; elevation: string; location: string; date: string; type: string }
-type TripReport = { title: string; date: string; views: number; comments: number }
-type GalleryImage = { src: string; caption: string; date: string }
-type SiteStats = {
-  peaksClimbed: number
-  totalElevation: string
-  tripReports: number
-  photos: number
-  memberSince: string
-  homeBase: string
-}
-type JournalIndexItem = { slug: string; title: string; date: string; tags: string[]; file: string }
 
 const toItems = <T,>(value: unknown): T[] =>
   Array.isArray(value)
@@ -112,10 +100,7 @@ function App() {
     return { peaks, tripReports, galleryImages, stats }
   }, [])
 
-  const [peaks, setPeaks] = useState<Peak[]>(defaultData.peaks)
-  const [tripReports, setTripReports] = useState<TripReport[]>(defaultData.tripReports)
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(defaultData.galleryImages)
-  const [stats, setStats] = useState<SiteStats>(defaultData.stats)
+  const [peaks] = useState<Peak[]>(defaultData.peaks)
   const [projects, setProjects] = useState<Project[]>(toItems<Project>(projectsContent))
   const [tripReports, setTripReports] = useState<TripReport[]>(toItems<TripReport>(tripsContent))
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(toItems<GalleryImage>(photosContent))
