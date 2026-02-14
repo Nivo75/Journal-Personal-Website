@@ -1,26 +1,27 @@
 import { useState } from 'react'
 import './App.css'
-import { Camera, Calendar, Compass, Mountain, TrendingUp, BookOpen } from 'lucide-react'
+import { Compass, Calendar, BookOpen, Mountain, TrendingUp, Camera } from 'lucide-react'
+
 import { Overview } from './pages/Overview'
+import { Journal } from './pages/Journal'
+import { Adventures } from './pages/Adventures'
+import { Projects } from './pages/Projects'
+import { StatsMap } from './pages/StatsMap'
+import { Gallery } from './pages/Gallery'
 
 type TabId = 'overview' | 'journal' | 'adventures' | 'projects' | 'stats-map' | 'gallery'
 
-type GalleryItem = { src: string; caption: string }
+const NAV: Array<{ id: TabId; label: string; icon: React.ComponentType<{ className?: string }> }> = [
+  { id: 'overview', label: 'Overview', icon: Compass },
+  { id: 'journal', label: 'Journal', icon: Calendar },
+  { id: 'adventures', label: 'Adventures', icon: BookOpen },
+  { id: 'projects', label: 'Projects', icon: Mountain },
+  { id: 'stats-map', label: 'Stats+Map', icon: TrendingUp },
+  { id: 'gallery', label: 'Gallery', icon: Camera },
+]
 
-const sampleGallery: GalleryItem[] = [{ src: '/placeholder-photo.svg', caption: 'Placeholder image' }]
-
-function EmptyPage({ title, message }: { title: string; message: string }) {
-  return (
-    <div className="box">
-      <div className="box-header">{title}</div>
-      <div className="p-4 text-sm text-[var(--text-muted)]">{message}</div>
-    </div>
-  )
-}
-
-function App() {
+export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
@@ -29,23 +30,17 @@ function App() {
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center gap-3">
               <Mountain className="w-6 h-6 text-[var(--accent)]" />
-              <h1 className="text-xl font-bold tracking-tight">NIVO JOURNAL</h1>
+              <h1 className="text-xl font-bold tracking-tight">LifeNotLived</h1>
             </div>
           </div>
 
           <nav className="flex gap-1 -mb-px">
-            {[
-              { id: 'overview' as const, label: 'Overview', icon: Compass },
-              { id: 'journal' as const, label: 'Journal', icon: Calendar },
-              { id: 'adventures' as const, label: 'Adventures', icon: BookOpen },
-              { id: 'projects' as const, label: 'Projects', icon: Mountain },
-              { id: 'stats-map' as const, label: 'Stats+Map', icon: TrendingUp },
-              { id: 'gallery' as const, label: 'Gallery', icon: Camera },
-            ].map((item) => (
+            {NAV.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
                 className={`nav-link flex items-center gap-2 ${activeTab === item.id ? 'active' : ''}`}
+                type="button"
               >
                 <item.icon className="w-3 h-3" />
                 {item.label}
@@ -57,53 +52,27 @@ function App() {
 
       <main className="max-w-6xl mx-auto px-4 py-6">
         {activeTab === 'overview' && <Overview />}
-        {activeTab === 'journal' && (
-          <EmptyPage title="Journal" message="No entries yet — first journal updates coming soon." />
-        )}
-        {activeTab === 'adventures' && (
-          <EmptyPage title="Adventures" message="No adventures yet — first entries coming soon." />
-        )}
-        {activeTab === 'projects' && (
-          <EmptyPage title="Projects" message="No projects yet — first entries coming soon." />
-        )}
-        {activeTab === 'stats-map' && (
-          <EmptyPage title="Stats+Map" message="Stats and map integrations are coming soon." />
-        )}
-        {activeTab === 'gallery' && (
-          <div className="box">
-            <div className="box-header">Gallery</div>
-            <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4">
-              {sampleGallery.map((img) => (
-                <button key={img.src} className="thumb p-0" onClick={() => setSelectedImage(img.src)}>
-                  <img src={img.src} alt={img.caption} className="w-full h-48 object-cover" />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        {activeTab === 'journal' && <Journal />}
+        {activeTab === 'adventures' && <Adventures />}
+        {activeTab === 'projects' && <Projects />}
+        {activeTab === 'stats-map' && <StatsMap />}
+        {activeTab === 'gallery' && <Gallery />}
       </main>
 
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
-        >
-          <button
-            className="absolute top-4 right-4 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            onClick={() => setSelectedImage(null)}
-          >
-            <span className="text-2xl">&times;</span>
-          </button>
-          <img
-            src={selectedImage}
-            alt="Full size"
-            className="max-w-full max-h-[90vh] object-contain border border-[var(--border)]"
-            onClick={(e) => e.stopPropagation()}
-          />
+      <footer className="footer">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Mountain className="w-4 h-4 text-[var(--accent)]" />
+              <span className="font-semibold">LifeNotLived</span>
+            </div>
+            <div className="text-center md:text-right">
+              <p>© {new Date().getFullYear()} LifeNotLived. All rights reserved.</p>
+              <p className="mt-1">Document often, explore more.</p>
+            </div>
+          </div>
         </div>
-      )}
+      </footer>
     </div>
   )
 }
-
-export default App
