@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 
 const latestEntries = [
-  { type: 'Journal', title: 'First entry coming soon', description: 'Notes and updates will appear here.' },
-  { type: 'Adventure', title: 'Adventure log placeholder', description: 'Upcoming outings will be tracked here.' },
-  { type: 'Project', title: 'Project update placeholder', description: 'Active builds and progress notes coming soon.' },
+  { type: 'journal', title: 'First entry coming soon', description: 'Notes and updates will appear here.' },
+  { type: 'adventure', title: 'Adventure log placeholder', description: 'Upcoming outings will be tracked here.' },
+  { type: 'project', title: 'Project update placeholder', description: 'Active builds and progress notes coming soon.' },
 ]
 
 export function Overview() {
@@ -31,70 +31,48 @@ export function Overview() {
 
   return (
     <div className="space-y-6">
-      <div className="box">
-        <div className="box-header flex items-center justify-between">
-          <span>Hero Video</span>
-          <button onClick={togglePlayback} className="text-[var(--link)] text-xs hover:underline">
-            {isPlaying ? 'Pause' : 'Play'}
-          </button>
-        </div>
-        <div className="p-4 space-y-3">
-          <video
-            ref={videoRef}
-            src="/media/hero.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            onError={() => setVideoFailed(true)}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            className="w-full rounded border border-[var(--border)] bg-black"
-          >
-            Your browser does not support the hero video.
-          </video>
-          {videoFailed && (
-            <div className="text-sm text-[var(--text-muted)]">
-              Hero video is unavailable. Add <span className="font-mono">/media/hero.mp4</span> to enable it.
-            </div>
-          )}
+      {/* Hero Section with Classical Styling */}
+      <div className="box hero-box">
+        <div className="hero-decoration"></div>
+        <div className="p-8">
+          <div className="hero-label">Navion Man</div>
+          <p className="hero-text">You are what you do</p>
         </div>
       </div>
 
-      <div className="box">
-        <div className="box-header">Navion Man</div>
-        <div className="p-4">
-          <p className="text-[var(--text-secondary)]">You are what you do</p>
+      {/* What I've Been Up To */}
+      <div>
+        <h2 className="section-title">What I've Been Up To</h2>
+        <div className="box update-box">
+          <div className="p-7 text-[var(--text-secondary)] text-[15px] leading-relaxed">
+            I'm rebuilding this personal site into a cleaner v2 experience focused on journals, adventures, and
+            projects. Fresh entries, media, and map-backed milestones will be published here soon.
+          </div>
         </div>
       </div>
 
-      <div className="box">
-        <div className="box-header">What I&apos;ve Been Up To</div>
-        <div className="p-4 text-[var(--text-secondary)] text-sm">
-          I&apos;m rebuilding this personal site into a cleaner v2 experience focused on journals, adventures, and
-          projects. Fresh entries, media, and map-backed milestones will be published here soon.
-        </div>
-      </div>
-
-      <div className="box">
-        <div className="box-header">Latest Entries</div>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Latest Entries with Color-Coded Cards */}
+      <div>
+        <h2 className="section-title block">Latest Entries</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {latestEntries.map((entry) => (
-            <article key={entry.type} className="border border-[var(--border)] bg-[var(--bg-primary)] px-3 py-3">
-              <div className="text-xs uppercase text-[var(--text-muted)]">{entry.type}</div>
-              <h3 className="mt-1 font-semibold text-sm">{entry.title}</h3>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">{entry.description}</p>
+            <article key={entry.type} className={`entry-card ${entry.type}`}>
+              <div className="entry-dot"></div>
+              <div className="entry-type">{entry.type}</div>
+              <h3>{entry.title}</h3>
+              <p>{entry.description}</p>
             </article>
           ))}
         </div>
       </div>
 
-      <div className="box">
-        <div className="box-header">Stats</div>
-        <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          {['Elevation', 'Prominence', 'Major_List', 'Minor_List'].map((label) => (
-            <div key={label} className="border border-[var(--border)] bg-[var(--bg-primary)] px-3 py-2">
-              <div className="text-xs text-[var(--text-muted)] uppercase">{label}</div>
+      {/* Stats Section */}
+      <div>
+        <h2 className="section-title block">Stats</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {['Elevation', 'Prominence', 'Major List', 'Minor List'].map((label) => (
+            <div key={label} className="stat-card">
+              <div className="stat-label">{label}</div>
             </div>
           ))}
         </div>
