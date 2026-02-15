@@ -1,50 +1,277 @@
-/* App-specific styles - minimal additions */
+/* Classical/Ancient Theme */
 
-/* Ensure images load with proper styling */
-img {
-  max-width: 100%;
-  height: auto;
+:root {
+  /* Colors */
+  --bg-primary: #F5F2ED;
+  --bg-card: #FDFCFA;
+  --text-primary: #3B3531;
+  --text-secondary: rgba(59, 53, 49, 0.85);
+  --text-muted: rgba(59, 53, 49, 0.6);
+  --accent: #8B7355;
+  --accent-2: #A0634A; /* terracotta */
+  --accent-3: #D4A574; /* soft gold */
+  --border: #C9BCA8;
+  --border-strong: #A89883;
+  --header-bg: #F5F2ED;
+  
+  /* Typography */
+  --font-header: 'Playfair Display', serif;
+  --font-body: 'Crimson Text', serif;
+  
+  /* Shadows */
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Table row hover cursor */
-table tbody tr {
-  cursor: default;
+/* Base Styles */
+* {
+  box-sizing: border-box;
 }
 
-table tbody tr td:first-child {
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* Header */
+header {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  font-size: 2rem;
+  margin: 0;
+  position: relative;
+}
+
+/* Navigation */
+.nav-link {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-body);
 }
 
-/* Modal animation */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.nav-link:hover {
+  border-bottom-color: var(--accent);
+  background: rgba(139, 115, 85, 0.05);
 }
 
-.fixed {
-  animation: fadeIn 0.15s ease-out;
+.nav-link.active {
+  border-bottom-color: var(--accent);
+  font-weight: 500;
 }
 
-/* Focus improvements for accessibility */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: 2px;
+/* Box/Card Components */
+.box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
-/* Print styles */
-@media print {
-  header,
-  footer,
-  nav,
-  .btn {
-    display: none !important;
+.box-header {
+  font-family: var(--font-header);
+  font-size: 1.5rem;
+  font-weight: 400;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.5px;
+}
+
+/* Hero Section Specific */
+.hero-box {
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.08), rgba(160, 99, 74, 0.05));
+  border-left: 4px solid var(--accent-2);
+  position: relative;
+}
+
+.hero-decoration {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 60px;
+  height: 60px;
+  border: 2px solid var(--accent-3);
+  border-radius: 50%;
+  opacity: 0.2;
+}
+
+.hero-label {
+  font-size: 0.6875rem;
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 1rem;
+}
+
+.hero-text {
+  font-size: 1.125rem;
+  font-style: italic;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+
+/* Update Section */
+.update-box {
+  border-left: 4px solid var(--accent-2);
+}
+
+/* Entry Cards */
+.entry-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.entry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.entry-card.journal {
+  border-top: 3px solid var(--accent);
+}
+
+.entry-card.adventure {
+  border-top: 3px solid var(--accent-2);
+}
+
+.entry-card.project {
+  border-top: 3px solid var(--accent-3);
+}
+
+.entry-dot {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+.entry-card.journal .entry-dot {
+  background: var(--accent);
+}
+
+.entry-card.adventure .entry-dot {
+  background: var(--accent-2);
+}
+
+.entry-card.project .entry-dot {
+  background: var(--accent-3);
+}
+
+.entry-type {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.75rem;
+}
+
+.entry-card.journal .entry-type {
+  color: var(--accent);
+}
+
+.entry-card.adventure .entry-type {
+  color: var(--accent-2);
+}
+
+.entry-card.project .entry-type {
+  color: var(--accent-3);
+}
+
+.entry-card h3 {
+  font-family: var(--font-header);
+  font-size: 1.125rem;
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.entry-card p {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* Stats Cards */
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.625rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Section Headers with Underlines */
+.section-title {
+  font-family: var(--font-header);
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--accent-3);
+  display: inline-block;
+  margin-bottom: 2rem;
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1rem;
+  margin-top: 5rem;
+  font-size: 0.875rem;
+}
+
+.footer p {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.5rem;
   }
   
-  body {
-    background: white !important;
-    color: black !important;
+  .box-header {
+    font-size: 1.25rem;
+    padding: 0.875rem 1rem;
+  }
+  
+  .nav-link {
+    font-size: 0.8125rem;
+    padding: 0.625rem 0.875rem;
   }
 }
