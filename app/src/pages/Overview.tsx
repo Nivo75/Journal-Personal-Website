@@ -1,5 +1,3 @@
-import { useRef, useState } from 'react'
-
 const latestEntries = [
   { type: 'journal', title: 'First entry coming soon', description: 'Notes and updates will appear here.' },
   { type: 'adventure', title: 'Adventure log placeholder', description: 'Upcoming outings will be tracked here.' },
@@ -7,28 +5,6 @@ const latestEntries = [
 ]
 
 export function Overview() {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [videoFailed, setVideoFailed] = useState(false)
-
-  const togglePlayback = async () => {
-    const video = videoRef.current
-    if (!video) return
-
-    if (video.paused) {
-      try {
-        await video.play()
-        setIsPlaying(true)
-      } catch {
-        setVideoFailed(true)
-      }
-      return
-    }
-
-    video.pause()
-    setIsPlaying(false)
-  }
-
   return (
     <div className="space-y-6">
       {/* Hero Section with Classical Styling */}
