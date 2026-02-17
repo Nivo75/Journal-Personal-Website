@@ -259,6 +259,119 @@ header h1 {
   font-style: italic;
 }
 
+/* Journal Page Styles */
+.list-plain {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-plain li {
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 0;
+  transition: all 0.2s;
+}
+
+.list-plain li:hover {
+  background: rgba(139, 115, 85, 0.03);
+  padding-left: 0.5rem;
+}
+
+.list-plain li:last-child {
+  border-bottom: none;
+}
+
+/* Adventures Page Styles */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.15), rgba(160, 99, 74, 0.1));
+  color: var(--accent-2);
+  border-radius: 4px;
+  border: 1px solid rgba(160, 99, 74, 0.2);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Projects Table Styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table thead {
+  border-bottom: 2px solid var(--accent-3);
+}
+
+.table th {
+  text-align: left;
+  padding: 0.75rem 0.5rem;
+  font-family: var(--font-header);
+  font-weight: 400;
+  color: var(--accent);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.table td {
+  padding: 0.875rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.table tbody tr:hover {
+  background: rgba(139, 115, 85, 0.03);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Stats Display */
+.stat-number {
+  font-family: var(--font-header);
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--accent-2);
+  margin-bottom: 0.25rem;
+}
+
+/* Gallery Thumb */
+.thumb {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.thumb:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Link Styling for Classical Theme */
+a,
+.text-\[var\(--link\)\] {
+  color: var(--accent-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover,
+.text-\[var\(--link\)\]:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   header h1 {
@@ -273,5 +386,18 @@ header h1 {
   .nav-link {
     font-size: 0.8125rem;
     padding: 0.625rem 0.875rem;
+  }
+  
+  .table {
+    font-size: 0.8125rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
   }
 }
