@@ -2,37 +2,35 @@ import { useMemo, useState } from 'react'
 import './App.css'
 import { Camera, Calendar, Compass, Mountain, TrendingUp, BookOpen } from 'lucide-react'
 import { Overview } from './pages/Overview'
+import { Journal } from './pages/Journal'
+import { Adventures } from './pages/Adventures'
+import { Projects } from './pages/Projects'
+import { StatsMap } from './pages/StatsMap'
+import { Gallery } from './pages/Gallery'
+import { type Peak, type TripReport, type GalleryImage, type SiteStats, type JournalIndexItem } from './pages/types'
 
 type TabId = 'overview' | 'journal' | 'adventures' | 'projects' | 'stats-map' | 'gallery'
-
-type GalleryItem = {
-  src: string
-  caption: string
-}
-
-function EmptyPage({ title, message }: { title: string; message: string }) {
-  return (
-    <div className="box">
-      <div className="box-header">{title}</div>
-      <div className="p-4">
-        <p className="text-[var(--text-secondary)] text-sm">{message}</p>
-      </div>
-    </div>
-  )
-}
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [activeJournalSlug, setActiveJournalSlug] = useState<string | null>(null)
+  const [activeJournalText] = useState<string>('')
 
-  const sampleGallery = useMemo<GalleryItem[]>(
-    () => [
-      { src: '/placeholder-photo.svg', caption: 'Placeholder image' },
-      { src: '/placeholder-photo.svg', caption: 'Placeholder image' },
-      { src: '/placeholder-photo.svg', caption: 'Placeholder image' },
-    ],
-    []
-  )
+  // Empty data - ready for you to populate via content files
+  const journalIndex = useMemo<JournalIndexItem[]>(() => [], [])
+  const tripReports = useMemo<TripReport[]>(() => [], [])
+  const peaks = useMemo<Peak[]>(() => [], [])
+  const galleryImages = useMemo<GalleryImage[]>(() => [], [])
+
+  const stats = useMemo<SiteStats>(() => ({
+    peaksClimbed: 0,
+    totalElevation: '0 ft',
+    tripReports: 0,
+    photos: 0,
+    memberSince: '—',
+    homeBase: '—',
+  }), [])
 
   const nav = useMemo(
     () => [
@@ -48,12 +46,26 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
+      {/* Header */}
       <header className="bg-[var(--header-bg)] border-b border-[var(--border)]">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <Mountain className="w-6 h-6 text-[var(--accent)]" />
-              <h1 className="text-xl font-bold tracking-tight">LifeNotLived</h1>
+              <Mountain className="w-6 h-6 text-[var(--accent-2)]" />
+              <div style={{ position: 'relative' }}>
+                <h1 className="text-2xl tracking-wide" style={{ fontFamily: 'var(--font-header)', fontWeight: 400 }}>
+                  LifeNotLived
+                </h1>
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-3px',
+                  left: 0,
+                  width: '60%',
+                  height: '2px',
+                  background: 'linear-gradient(90deg, var(--accent-3), transparent)',
+                  opacity: 0.6
+                }} />
+              </div>
             </div>
           </div>
 
@@ -73,81 +85,77 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
         {activeTab === 'overview' && <Overview />}
 
         {activeTab === 'journal' && (
-          <EmptyPage title="Journal" message="Placeholder: entries will appear here once wired up." />
-        )}
-
-        {activeTab === 'adventures' && (
-          <EmptyPage title="Adventures" message="Placeholder: Continent → Country → Trips." />
-        )}
-
-        {activeTab === 'projects' && (
-          <EmptyPage title="Projects" message="Placeholder: projects list will go here." />
-        )}
-
-        {activeTab === 'stats-map' && (
-          <EmptyPage
-            title="Stats + Map"
-            message="Placeholder: stats snapshot + interactive map pins (MVP: pins first)."
+          <Journal
+            journalIndex={journalIndex}
+            activeJournalSlug={activeJournalSlug}
+            activeJournalText={activeJournalText}
+            onSelectJournal={(slug) => setActiveJournalSlug(slug)}
           />
         )}
 
+        {activeTab === 'adventures' && (
+          <Adventures tripReports={tripReports} />
+        )}
+
+        {activeTab === 'projects' && (
+          <Projects peaks={peaks} />
+        )}
+
+        {activeTab === 'stats-map' && (
+          <StatsMap stats={stats} />
+        )}
+
         {activeTab === 'gallery' && (
-          <div className="box">
-            <div className="box-header">Gallery</div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {sampleGallery.map((img, i) => (
-                  <button
-                    key={`${img.src}-${i}`}
-                    className="thumb cursor-pointer"
-                    type="button"
-                    onClick={() => setSelectedImage(img.src)}
-                  >
-                    <img src={img.src} alt={img.caption} className="w-full h-40 object-cover" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <Gallery
+            galleryImages={galleryImages}
+            onSelectImage={(src) => setSelectedImage(src)}
+          />
         )}
       </main>
 
+      {/* Footer */}
       <footer className="footer">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Mountain className="w-4 h-4 text-[var(--accent)]" />
-              <span className="font-semibold">LifeNotLived</span>
+              <span style={{ fontFamily: 'var(--font-body)', color: 'var(--accent)' }}>LifeNotLived</span>
             </div>
             <div className="text-center md:text-right">
-              <p>© {new Date().getFullYear()} LifeNotLived</p>
-              <p className="mt-1">You are what you do.</p>
+              <p style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>You are what you do.</p>
+              <p className="mt-1" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.6 }}>
+                © {new Date().getFullYear()} LifeNotLived
+              </p>
             </div>
           </div>
         </div>
       </footer>
 
+      {/* Image Lightbox */}
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.85)' }}
           onClick={() => setSelectedImage(null)}
         >
           <button
-            className="absolute top-4 right-4 text-white/80 hover:text-white"
+            className="absolute top-4 right-4"
+            style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.5rem' }}
             onClick={() => setSelectedImage(null)}
             type="button"
           >
-            <span className="text-2xl">&times;</span>
+            &times;
           </button>
-
           <img
             src={selectedImage}
             alt="Full size"
-            className="max-w-full max-h-[90vh] object-contain border border-white/20"
+            className="max-w-full max-h-[90vh] object-contain"
+            style={{ border: '1px solid rgba(255,255,255,0.2)' }}
             onClick={(e) => e.stopPropagation()}
           />
         </div>
