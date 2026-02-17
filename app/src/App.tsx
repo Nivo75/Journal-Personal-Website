@@ -7,7 +7,7 @@ import { Adventures } from './pages/Adventures'
 import { Projects } from './pages/Projects'
 import { StatsMap } from './pages/StatsMap'
 import { Gallery } from './pages/Gallery'
-import { type Peak, type TripReport, type GalleryImage, type SiteStats, type JournalIndexItem } from './pages/types'
+import { type Peak, type TripReport, type GalleryImage, type JournalIndexItem } from './pages/types'
 
 type TabId = 'overview' | 'journal' | 'adventures' | 'projects' | 'stats-map' | 'gallery'
 
@@ -22,15 +22,6 @@ export default function App() {
   const tripReports = useMemo<TripReport[]>(() => [], [])
   const peaks = useMemo<Peak[]>(() => [], [])
   const galleryImages = useMemo<GalleryImage[]>(() => [], [])
-
-  const stats = useMemo<SiteStats>(() => ({
-    peaksClimbed: 0,
-    totalElevation: '0 ft',
-    tripReports: 0,
-    photos: 0,
-    memberSince: '—',
-    homeBase: '—',
-  }), [])
 
   const nav = useMemo(
     () => [
@@ -106,9 +97,7 @@ export default function App() {
           <Projects peaks={peaks} />
         )}
 
-        {activeTab === 'stats-map' && (
-          <StatsMap stats={stats} />
-        )}
+        {activeTab === 'stats-map' && <StatsMap />}
 
         {activeTab === 'gallery' && (
           <Gallery
