@@ -7,7 +7,7 @@ import { Adventures } from './pages/Adventures'
 import { Projects } from './pages/Projects'
 import { StatsMap } from './pages/StatsMap'
 import { Gallery } from './pages/Gallery'
-import { type Project, type TripReport, type GalleryImage, type JournalIndexItem } from './pages/types'
+import { type Project, type GalleryImage, type JournalIndexItem } from './pages/types'
 
 type TabId = 'overview' | 'journal' | 'adventures' | 'projects' | 'stats-map' | 'gallery'
 
@@ -21,7 +21,6 @@ export default function App() {
   const [activeJournalText, setActiveJournalText] = useState<string>('')
   
   // Content state
-  const [tripReports, setTripReports] = useState<TripReport[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
 
@@ -32,12 +31,6 @@ export default function App() {
       .then(res => res.json())
       .then(data => setJournalIndex(data.items || []))
       .catch(err => console.error('Failed to load journal index:', err))
-
-    // Load trip reports
-    fetch('/content/tripReports.json')
-      .then(res => res.json())
-      .then(data => setTripReports(data.items || []))
-      .catch(err => console.error('Failed to load trip reports:', err))
 
     // Load projects
     fetch('/content/projects.json')
@@ -142,7 +135,7 @@ export default function App() {
         )}
 
         {activeTab === 'adventures' && (
-          <Adventures tripReports={tripReports} />
+          <Adventures />
         )}
 
         {activeTab === 'projects' && (
