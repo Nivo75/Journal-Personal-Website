@@ -13,11 +13,24 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
 
+  // Debug logging
+  console.log('Journal component rendered', {
+    journalIndexLength: journalIndex?.length,
+    activeJournalSlug,
+    hasActiveText: !!activeJournalText
+  })
+
   // Get all unique tags
   const allTags = useMemo(() => {
     const tagSet = new Set<string>()
     journalIndex.forEach(entry => {
-      entry.tags?.forEach(tag => tagSet.add(tag))
+      if (entry.tags && Array.isArray(entry.tags)) {
+        entry.tags.forEach(tag => {
+          if (tag && typeof tag === 'string') {
+            tagSet.add(tag)
+          }
+        })
+      }
     })
     return Array.from(tagSet).sort()
   }, [journalIndex])
@@ -38,7 +51,7 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
     // Filter by selected tag
     if (selectedTag) {
       filtered = filtered.filter(entry => 
-        entry.tags?.includes(selectedTag)
+        entry.tags && Array.isArray(entry.tags) && entry.tags.includes(selectedTag)
       )
     }
 
