@@ -7,6 +7,7 @@ import { Adventures } from './pages/Adventures'
 import { Projects } from './pages/Projects'
 import { StatsMap } from './pages/StatsMap'
 import { Gallery } from './pages/Gallery'
+import { ThemeToggle } from './components/ThemeToggle'
 import { type Project, type GalleryImage, type JournalIndexItem } from './pages/types'
 
 type TabId = 'overview' | 'journal' | 'adventures' | 'projects' | 'stats-map' | 'gallery'
@@ -103,6 +104,9 @@ export default function App() {
                 }} />
               </div>
             </div>
+            
+            {/* Theme Toggle */}
+            <ThemeToggle />
           </div>
 
           <nav className="flex gap-1 -mb-px flex-wrap">
