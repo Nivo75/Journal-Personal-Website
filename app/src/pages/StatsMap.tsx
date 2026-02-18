@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import 'leaflet/dist/leaflet.css'
 
 type HikeRow = {
   AscentDate: string
@@ -120,8 +121,10 @@ const statCards = (stats: ComputedStats) => [
 
 export function StatsMap() {
   const [stats, setStats] = useState<ComputedStats | null>(null)
+  const [peaks, setPeaks] = useState<HikeRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [mapLoaded, setMapLoaded] = useState(false)
 
   useEffect(() => {
     fetch('/hikes.csv')
@@ -132,6 +135,7 @@ export function StatsMap() {
       .then(text => {
         const rows = parseCSV(text)
         setStats(computeStats(rows))
+        setPeaks(rows)
         setLoading(false)
       })
       .catch(err => {
@@ -139,6 +143,104 @@ export function StatsMap() {
         setLoading(false)
       })
   }, [])
+
+  useEffect(() => {
+    if (!peaks.length || mapLoaded) return
+
+    // Dynamically load Leaflet
+    const loadLeaflet = async () => {
+      // @ts-ignore
+      if (window.L) {
+        initMap()
+        return
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+      script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo='
+      script.crossOrigin = ''
+      script.onload = () => initMap()
+      document.head.appendChild(script)
+
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+      link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY='
+      link.crossOrigin = ''
+      document.head.appendChild(link)
+    }
+
+    const initMap = () => {
+      // @ts-ignore
+      const L = window.L
+      if (!L) return
+
+      const map = L.map('peak-map', {
+        center: [39.8283, -98.5795], // Center of US
+        zoom: 4,
+        scrollWheelZoom: true
+      })
+
+      // Use a classical/muted tile layer
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+      }).addTo(map)
+
+      // Custom marker icon
+      const createIcon = (color: string) => {
+        return L.divIcon({
+          html: `<div style="
+            width: 12px;
+            height: 12px;
+            background: ${color};
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          "></div>`,
+          className: '',
+          iconSize: [12, 12]
+        })
+      }
+
+      // Add markers for each peak
+      peaks.forEach(peak => {
+        const lat = parseFloat(peak.Lat)
+        const lng = parseFloat(peak.Long)
+        
+        if (isNaN(lat) || isNaN(lng)) return
+
+        // Color by quality rating
+        const quality = parseFloat(peak.Quality) || 0
+        const color = quality >= 7 ? '#8B7355' : quality >= 5 ? '#A0634A' : '#D4A574'
+
+        const marker = L.marker([lat, lng], { icon: createIcon(color) }).addTo(map)
+
+        const elevation = parseFloat(peak['Elevation(ft)']) || 0
+        const gain = parseFloat(peak['Elevation-Gain(ft)']) || 0
+        
+        marker.bindPopup(`
+          <div style="font-family: 'Crimson Text', serif; min-width: 200px;">
+            <div style="font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #3B3531;">
+              ${peak.PeakPointName}
+            </div>
+            <div style="font-size: 13px; color: #3B3531; opacity: 0.8; line-height: 1.6;">
+              <div><strong>Elevation:</strong> ${elevation.toLocaleString()} ft</div>
+              <div><strong>Gain:</strong> ${gain.toLocaleString()} ft</div>
+              <div><strong>Location:</strong> ${peak.Location}</div>
+              <div><strong>Date:</strong> ${peak.AscentDate}</div>
+              <div><strong>Quality:</strong> ${quality}/10</div>
+              ${peak['Solo-Hike'] === 'TRUE' ? '<div style="color: #A0634A; margin-top: 4px;">✓ Solo</div>' : ''}
+            </div>
+          </div>
+        `)
+      })
+
+      setMapLoaded(true)
+    }
+
+    loadLeaflet()
+  }, [peaks, mapLoaded])
 
   return (
     <div className="space-y-8">
@@ -210,21 +312,29 @@ export function StatsMap() {
         )}
       </div>
 
-      {/* Map Placeholder */}
+      {/* Interactive Map */}
       <div className="box update-box">
         <div className="box-header">Interactive Map</div>
         <div className="p-6">
-          <div
-            className="text-center py-12 text-sm text-[var(--text-muted)] italic"
-            style={{
-              border: '2px dashed var(--border)',
-              borderRadius: '4px'
-            }}
-          >
-            Map layer coming soon — will display pins for all {stats?.uniqueAscents ?? '—'} logged ascents.
-            <br />
-            <span className="text-xs mt-2 block">Pins will include peak name, elevation, date, and quality rating.</span>
-          </div>
+          {loading ? (
+            <div className="text-sm text-[var(--text-muted)] italic py-12 text-center">
+              Loading map data...
+            </div>
+          ) : (
+            <div>
+              <div 
+                id="peak-map" 
+                style={{ 
+                  height: '500px', 
+                  borderRadius: '4px',
+                  border: '1px solid var(--border)'
+                }}
+              />
+              <div className="text-xs text-[var(--text-muted)] mt-3 italic text-center">
+                {stats?.uniqueAscents} peaks plotted • Click any marker for details • Colors indicate quality rating
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
