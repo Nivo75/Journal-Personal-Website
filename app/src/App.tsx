@@ -7,7 +7,7 @@ import { Adventures } from './pages/Adventures'
 import { Projects } from './pages/Projects'
 import { StatsMap } from './pages/StatsMap'
 import { Gallery } from './pages/Gallery'
-import { type Peak, type TripReport, type GalleryImage, type JournalIndexItem } from './pages/types'
+import { type Project, type TripReport, type GalleryImage, type JournalIndexItem } from './pages/types'
 
 type TabId = 'overview' | 'journal' | 'adventures' | 'projects' | 'stats-map' | 'gallery'
 
@@ -22,7 +22,7 @@ export default function App() {
   
   // Content state
   const [tripReports, setTripReports] = useState<TripReport[]>([])
-  const [peaks, setPeaks] = useState<Peak[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
 
   // Load all content on mount
@@ -39,11 +39,11 @@ export default function App() {
       .then(data => setTripReports(data.items || []))
       .catch(err => console.error('Failed to load trip reports:', err))
 
-    // Load peaks/projects
-    fetch('/content/peaks.json')
+    // Load projects
+    fetch('/content/projects.json')
       .then(res => res.json())
-      .then(data => setPeaks(data.items || []))
-      .catch(err => console.error('Failed to load peaks:', err))
+      .then(data => setProjects(data.items || []))
+      .catch(err => console.error('Failed to load projects:', err))
 
     // Load gallery
     fetch('/content/gallery.json')
@@ -146,7 +146,7 @@ export default function App() {
         )}
 
         {activeTab === 'projects' && (
-          <Projects peaks={peaks} />
+          <Projects projects={projects} />
         )}
 
         {activeTab === 'stats-map' && <StatsMap />}
