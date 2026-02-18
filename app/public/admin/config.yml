@@ -22,6 +22,37 @@ collections:
       - { label: "Tags", name: "tags", widget: "list", allow_add: true, default: [] }
       - { label: "Body", name: "body", widget: "markdown" }
 
+  # Adventure Trip Reports (Markdown files)
+  - name: "adventures"
+    label: "Adventure Reports"
+    folder: "app/public/adventures"
+    create: true
+    format: "frontmatter"
+    extension: "md"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "string", hint: "e.g., Aug 15, 2025" }
+      - { 
+          label: "Continent", 
+          name: "continent", 
+          widget: "select", 
+          options: ["North America", "South America", "Europe", "Asia", "Africa", "Oceania"]
+        }
+      - { label: "Location", name: "location", widget: "string", hint: "e.g., California, USA" }
+      - { label: "Distance", name: "distance", widget: "string", required: false, hint: "e.g., 22 miles" }
+      - { label: "Elevation Gain", name: "elevation_gain", widget: "string", required: false, hint: "e.g., 6,178 ft" }
+      - { label: "Duration", name: "duration", widget: "string", required: false, hint: "e.g., 14 hours" }
+      - { 
+          label: "Difficulty", 
+          name: "difficulty", 
+          widget: "select", 
+          options: ["Easy", "Moderate", "Hard", "Extreme"],
+          required: false
+        }
+      - { label: "Season", name: "season", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
   # Trip Reports (Adventures)
   - name: "trips"
     label: "Adventures (Trip Reports)"
