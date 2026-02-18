@@ -1,72 +1,214 @@
-import { type JournalIndexItem } from './types'
+import { useState } from 'react'
+import { Wrench, Hammer, Monitor, Cog, Briefcase, Mountain as Rock, Cpu, Flame, Camera, Users } from 'lucide-react'
 
-type JournalProps = {
-  journalIndex: JournalIndexItem[]
-  activeJournalSlug: string | null
-  activeJournalText: string
-  onSelectJournal: (slug: string) => void
+type Project = {
+  title: string
+  category: string
+  description: string
+  date: string
+  status: 'completed' | 'in-progress' | 'planned'
+  image?: string
 }
 
-export function Journal({ journalIndex, activeJournalSlug, activeJournalText, onSelectJournal }: JournalProps) {
+type ProjectsProps = {
+  projects: Project[]
+}
+
+type Category = 
+  | 'Woodworking' 
+  | 'Crafting' 
+  | 'Digital' 
+  | 'Engineering' 
+  | 'Business' 
+  | 'Rockhounding' 
+  | 'Electronics' 
+  | 'Metallurgy' 
+  | 'Photography' 
+  | 'Social'
+
+const categories: Category[] = [
+  'Woodworking',
+  'Crafting',
+  'Digital',
+  'Engineering',
+  'Business',
+  'Rockhounding',
+  'Electronics',
+  'Metallurgy',
+  'Photography',
+  'Social'
+]
+
+const categoryIcons: Record<Category, any> = {
+  'Woodworking': Hammer,
+  'Crafting': Wrench,
+  'Digital': Monitor,
+  'Engineering': Cog,
+  'Business': Briefcase,
+  'Rockhounding': Rock,
+  'Electronics': Cpu,
+  'Metallurgy': Flame,
+  'Photography': Camera,
+  'Social': Users
+}
+
+const categoryColors: Record<Category, string> = {
+  'Woodworking': 'var(--accent)',
+  'Crafting': 'var(--accent-2)',
+  'Digital': 'var(--accent-3)',
+  'Engineering': 'var(--accent-4)',
+  'Business': 'var(--accent)',
+  'Rockhounding': 'var(--accent-2)',
+  'Electronics': 'var(--accent-3)',
+  'Metallurgy': 'var(--accent-4)',
+  'Photography': 'var(--accent)',
+  'Social': 'var(--accent-2)'
+}
+
+export function Projects({ projects }: ProjectsProps) {
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+
+  // Filter projects
+  const filteredProjects = selectedCategory
+    ? projects.filter(p => p.category === selectedCategory)
+    : projects
+
+  // Group projects by category
+  const projectsByCategory = categories.map(category => ({
+    category,
+    projects: projects.filter(p => p.category === category),
+    count: projects.filter(p => p.category === category).length
+  }))
+
   return (
     <div className="space-y-6">
-      {/* Header with Classical styling */}
+      {/* Header */}
       <div>
-        <h2 className="section-title">Journal</h2>
+        <h2 className="section-title">Projects</h2>
         <p className="text-[var(--text-secondary)] text-sm mt-4">
-          Personal reflections, observations, and notes from the field.
+          A collection of builds, experiments, and creative work across multiple disciplines.
+          {selectedCategory && ` Currently viewing: ${selectedCategory}`}
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* Entries List */}
-        <div className="box md:col-span-1">
-          <div className="box-header">Entries</div>
-          <div className="p-3">
-            {journalIndex.length === 0 ? (
-              <div className="text-sm text-[var(--text-muted)] italic py-4">
-                No entries yet. First journal posts coming soon.
-              </div>
-            ) : (
-              <ul className="list-plain">
-                {journalIndex.map((entry) => (
-                  <li
-                    key={entry.slug}
-                    className={`cursor-pointer transition-all ${
-                      activeJournalSlug === entry.slug 
-                        ? 'text-[var(--accent-2)]' 
-                        : 'text-[var(--text-primary)]'
-                    }`}
-                    onClick={() => onSelectJournal(entry.slug)}
-                  >
-                    <div className="text-sm font-medium hover:text-[var(--accent-2)]">
-                      {entry.title}
-                    </div>
-                    <div className="text-xs text-[var(--text-muted)] mt-1">{entry.date}</div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-
-        {/* Entry Content */}
-        <div className="box md:col-span-2 entry-card journal">
-          <div className="p-6">
-            {activeJournalText ? (
-              <div>
-                <pre className="whitespace-pre-wrap font-[var(--font-body)] text-[15px] leading-relaxed text-[var(--text-secondary)]">
-                  {activeJournalText}
-                </pre>
-              </div>
-            ) : (
-              <div className="text-sm text-[var(--text-muted)] italic text-center py-12">
-                Select an entry to read.
-              </div>
-            )}
-          </div>
-        </div>
+      {/* Category Filter Pills */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setSelectedCategory(null)}
+          className={`px-3 py-1.5 text-xs rounded transition-all ${
+            selectedCategory === null
+              ? 'bg-[var(--accent-2)] text-[var(--bg-primary)] border border-[var(--accent-2)]'
+              : 'bg-transparent text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--accent-2)]'
+          }`}
+          style={{ fontFamily: 'var(--font-body)' }}
+        >
+          All ({projects.length})
+        </button>
+        {projectsByCategory.map(({ category, count }) => {
+          const Icon = categoryIcons[category]
+          return (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-3 py-1.5 text-xs rounded transition-all flex items-center gap-1.5 ${
+                selectedCategory === category
+                  ? 'bg-[var(--accent-2)] text-[var(--bg-primary)] border border-[var(--accent-2)]'
+                  : 'bg-transparent text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--accent-2)]'
+              }`}
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              <Icon className="w-3 h-3" />
+              {category} ({count})
+            </button>
+          )
+        })}
       </div>
+
+      {/* Project Cards */}
+      {filteredProjects.length === 0 ? (
+        <div className="box">
+          <div className="p-6 text-sm text-[var(--text-muted)] italic text-center">
+            {selectedCategory 
+              ? `No ${selectedCategory} projects yet.`
+              : 'No projects yet — first entries coming soon.'}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredProjects.map((project, i) => {
+            const Icon = categoryIcons[project.category as Category]
+            const color = categoryColors[project.category as Category]
+            
+            return (
+              <div 
+                key={i} 
+                className="entry-card project"
+                style={{
+                  borderTopColor: color
+                }}
+              >
+                <div 
+                  className="entry-dot" 
+                  style={{ background: color }}
+                />
+                
+                <div className="p-5">
+                  {/* Category Badge */}
+                  <div 
+                    className="flex items-center gap-1.5 mb-3"
+                    style={{ 
+                      fontSize: '0.625rem',
+                      color: color,
+                      textTransform: 'uppercase',
+                      letterSpacing: '1.5px'
+                    }}
+                  >
+                    <Icon className="w-3 h-3" />
+                    {project.category}
+                  </div>
+
+                  {/* Title and Status */}
+                  <div className="flex items-start justify-between mb-3 gap-4">
+                    <h3 
+                      className="text-lg font-[var(--font-header)] font-normal text-[var(--text-primary)]"
+                      style={{ flex: 1 }}
+                    >
+                      {project.title}
+                    </h3>
+                    <span 
+                      className="tag whitespace-nowrap text-xs"
+                      style={{
+                        background: project.status === 'completed' 
+                          ? 'rgba(123, 158, 135, 0.15)'
+                          : project.status === 'in-progress'
+                          ? 'rgba(212, 165, 116, 0.15)'
+                          : 'rgba(160, 99, 74, 0.15)',
+                        color: project.status === 'completed'
+                          ? 'var(--accent-4)'
+                          : project.status === 'in-progress'
+                          ? 'var(--accent-3)'
+                          : 'var(--accent-2)'
+                      }}
+                    >
+                      {project.status}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-[var(--text-secondary)] text-sm mb-3 leading-relaxed">
+                    {project.description}
+                  </p>
+
+                  {/* Date */}
+                  <div className="text-xs text-[var(--text-muted)]">
+                    {project.date}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
