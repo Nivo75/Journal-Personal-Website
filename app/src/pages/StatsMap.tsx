@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import 'leaflet/dist/leaflet.css'
 
 type HikeRow = {
   AscentDate: string
