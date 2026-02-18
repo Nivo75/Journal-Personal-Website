@@ -137,7 +137,7 @@ export default function App() {
             journalIndex={journalIndex}
             activeJournalSlug={activeJournalSlug}
             activeJournalText={activeJournalText}
-            onSelectJournal={(slug) => setActiveJournalSlug(slug)}
+            onSelectJournal={(slug: string) => setActiveJournalSlug(slug)}
           />
         )}
 
@@ -154,7 +154,7 @@ export default function App() {
         {activeTab === 'gallery' && (
           <Gallery
             galleryImages={galleryImages}
-            onSelectImage={(src) => setSelectedImage(src)}
+            onSelectImage={(src: string) => setSelectedImage(src)}
           />
         )}
       </main>
