@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "title": "Custom Workbench Build",
+      "category": "Woodworking",
+      "description": "Heavy-duty workbench with integrated tool storage and hardwood top. Features adjustable legs and modular vise system.",
+      "date": "Dec 2024",
+      "status": "completed"
+    },
+    {
+      "title": "Leather Journal Cover",
+      "category": "Crafting",
+      "description": "Hand-stitched leather cover for field journal. Vegetable-tanned leather with brass hardware and internal pockets.",
+      "date": "Nov 2024",
+      "status": "completed"
+    },
+    {
+      "title": "Personal Website v2",
+      "category": "Digital",
+      "description": "Redesigned personal site with Classical theme. Features auto-updating stats, journal entries, and adventure logs.",
+      "date": "Feb 2026",
+      "status": "in-progress"
+    },
+    {
+      "title": "CNC Router Frame",
+      "category": "Engineering",
+      "description": "Aluminum extrusion frame for DIY CNC router. Designed for rigidity and precision with lead screw drive system.",
+      "date": "Oct 2024",
+      "status": "in-progress"
+    },
+    {
+      "title": "Local Trail Maintenance Co-op",
+      "category": "Business",
+      "description": "Community-funded trail maintenance service. Coordinating volunteers and establishing sustainable funding model.",
+      "date": "Jan 2025",
+      "status": "planned"
+    },
+    {
+      "title": "Mineral Collection Catalog",
+      "category": "Rockhounding",
+      "description": "Documented field collection of 200+ specimens. Includes location data, formation details, and photographs.",
+      "date": "Sep 2024",
+      "status": "completed"
+    },
+    {
+      "title": "ESP32 Weather Station",
+      "category": "Electronics",
+      "description": "Solar-powered remote weather station with WiFi connectivity. Monitors temperature, humidity, pressure, and wind.",
+      "date": "Jun 2024",
+      "status": "completed"
+    },
+    {
+      "title": "Knife Forging Setup",
+      "category": "Metallurgy",
+      "description": "Built gas forge and acquired anvil for blade smithing. Currently practicing basic stock removal and heat treating.",
+      "date": "Mar 2025",
+      "status": "in-progress"
+    },
+    {
+      "title": "Large Format Film Photography",
+      "category": "Photography",
+      "description": "Exploring 4x5 view camera system for landscape work. Learning wet plate collodion process.",
+      "date": "Aug 2024",
+      "status": "in-progress"
+    },
+    {
+      "title": "Hiking Meetup Group",
+      "category": "Social",
+      "description": "Monthly group hikes for beginners and intermediates. Focus on skill-building and safety education.",
+      "date": "May 2024",
+      "status": "completed"
+    }
+  ]
+}
