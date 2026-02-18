@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ExternalLink, TrendingUp, User, ArrowLeft, Globe, MapPin, TrendingUp as Elevation, Clock } from 'lucide-react'
+import { ExternalLink, TrendingUp, ArrowLeft, Globe, MapPin, TrendingUp as Elevation } from 'lucide-react'
 
 type Continent = 'North America' | 'South America' | 'Europe' | 'Asia' | 'Africa' | 'Oceania'
 
@@ -16,14 +16,7 @@ type AdventureIndexItem = {
 }
 
 type AdventuresProps = {
-  // Legacy prop for backward compatibility
-  tripReports?: Array<{
-    title: string
-    date: string
-    views: number
-    comments: number
-    continent: Continent
-  }>
+  // Empty for now - adventures load from index.json
 }
 
 const continents: Continent[] = ['North America', 'South America', 'Europe', 'Asia', 'Africa', 'Oceania']
@@ -40,7 +33,7 @@ const getContinentSVG = (continent: Continent): string => {
   return svgs[continent]
 }
 
-export function Adventures({ tripReports = [] }: AdventuresProps) {
+export function Adventures({}: AdventuresProps) {
   const [selectedContinent, setSelectedContinent] = useState<Continent | null>(null)
   const [selectedAdventure, setSelectedAdventure] = useState<string | null>(null)
   const [adventureContent, setAdventureContent] = useState<string>('')
