@@ -1,8 +1,46 @@
 {
   "items": [
-    {"title":"Winter Ascent of Mount Hood","date":"Dec 12, 2023","views":1247,"comments":23},
-    {"title":"Solo Traverse of the Cascades","date":"Nov 28, 2023","views":892,"comments":15},
-    {"title":"Rainier Disappointment Cleaver Route","date":"Oct 15, 2023","views":2156,"comments":41},
-    {"title":"Backpacking the Wonderland Trail","date":"Sep 02, 2023","views":1567,"comments":28}
+    {
+      "title": "Mount Whitney Summit Push",
+      "date": "Aug 15, 2025",
+      "views": 1247,
+      "comments": 23,
+      "continent": "North America"
+    },
+    {
+      "title": "Patagonia Ice Trek",
+      "date": "Nov 28, 2024",
+      "views": 892,
+      "comments": 15,
+      "continent": "South America"
+    },
+    {
+      "title": "Alps Haute Route Traverse",
+      "date": "Jul 12, 2024",
+      "views": 2156,
+      "comments": 41,
+      "continent": "Europe"
+    },
+    {
+      "title": "Everest Base Camp Circuit",
+      "date": "Oct 5, 2023",
+      "views": 3421,
+      "comments": 67,
+      "continent": "Asia"
+    },
+    {
+      "title": "Kilimanjaro Machame Route",
+      "date": "Jan 20, 2023",
+      "views": 1567,
+      "comments": 28,
+      "continent": "Africa"
+    },
+    {
+      "title": "New Zealand Southern Alps",
+      "date": "Mar 8, 2023",
+      "views": 1103,
+      "comments": 19,
+      "continent": "Oceania"
+    }
   ]
 }
