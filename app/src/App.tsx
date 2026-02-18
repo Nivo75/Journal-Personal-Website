@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { Camera, Calendar, Compass, Mountain, TrendingUp, BookOpen } from 'lucide-react'
 import { Overview } from './pages/Overview'
@@ -14,14 +14,66 @@ type TabId = 'overview' | 'journal' | 'adventures' | 'projects' | 'stats-map' | 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  
+  // Journal state
+  const [journalIndex, setJournalIndex] = useState<JournalIndexItem[]>([])
   const [activeJournalSlug, setActiveJournalSlug] = useState<string | null>(null)
-  const [activeJournalText] = useState<string>('')
+  const [activeJournalText, setActiveJournalText] = useState<string>('')
+  
+  // Content state
+  const [tripReports, setTripReports] = useState<TripReport[]>([])
+  const [peaks, setPeaks] = useState<Peak[]>([])
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
 
-  // Empty data - ready for you to populate via content files
-  const journalIndex = useMemo<JournalIndexItem[]>(() => [], [])
-  const tripReports = useMemo<TripReport[]>(() => [], [])
-  const peaks = useMemo<Peak[]>(() => [], [])
-  const galleryImages = useMemo<GalleryImage[]>(() => [], [])
+  // Load all content on mount
+  useEffect(() => {
+    // Load journal index
+    fetch('/journal/index.json')
+      .then(res => res.json())
+      .then(data => setJournalIndex(data.items || []))
+      .catch(err => console.error('Failed to load journal index:', err))
+
+    // Load trip reports
+    fetch('/content/tripReports.json')
+      .then(res => res.json())
+      .then(data => setTripReports(data.items || []))
+      .catch(err => console.error('Failed to load trip reports:', err))
+
+    // Load peaks/projects
+    fetch('/content/peaks.json')
+      .then(res => res.json())
+      .then(data => setPeaks(data.items || []))
+      .catch(err => console.error('Failed to load peaks:', err))
+
+    // Load gallery
+    fetch('/content/gallery.json')
+      .then(res => res.json())
+      .then(data => setGalleryImages(data.items || []))
+      .catch(err => console.error('Failed to load gallery:', err))
+  }, [])
+
+  // Load journal entry when selected
+  useEffect(() => {
+    if (!activeJournalSlug) {
+      setActiveJournalText('')
+      return
+    }
+    
+    const entry = journalIndex.find(e => e.slug === activeJournalSlug)
+    if (!entry) return
+
+    fetch(entry.file)
+      .then(res => res.text())
+      .then(text => {
+        // Strip frontmatter for display
+        const content = text.replace(/^---[\s\S]*?---\n/, '')
+        setActiveJournalText(content)
+      })
+      .catch(err => {
+        console.error('Failed to load journal entry:', err)
+        setActiveJournalText('Failed to load entry.')
+      })
+  }, [activeJournalSlug, journalIndex])
 
   const nav = useMemo(
     () => [
