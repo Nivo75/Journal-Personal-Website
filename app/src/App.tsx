@@ -82,9 +82,9 @@ export default function App() {
   )
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)]">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {/* Header */}
-      <header className="bg-[var(--header-bg)] border-b border-[var(--border)]">
+      <header style={{ backgroundColor: 'var(--header-bg)', borderBottom: '1px solid var(--border)' }}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
@@ -157,7 +157,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer" style={{ backgroundColor: 'var(--bg-primary)', borderTop: '1px solid var(--border)' }}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
