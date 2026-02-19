@@ -36,7 +36,7 @@
 }
 
 /* Dark Mode - Outside @layer to ensure proper specificity */
-[data-theme="dark"] {
+html[data-theme="dark"] {
   --bg-primary: #1A1614;
   --bg-secondary: #241F1D;
   --bg-tertiary: #2D2825;
