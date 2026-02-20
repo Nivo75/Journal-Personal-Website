@@ -1,29 +1,52 @@
-import { useState, useMemo } from 'react'
-import { type JournalIndexItem } from './types'
+import { useState, useMemo, useEffect } from 'react'
 import { Search, X, Tag } from 'lucide-react'
+import { supabase } from '../lib/supabaseClient'
 
-type JournalProps = {
-  journalIndex: JournalIndexItem[]
-  activeJournalSlug: string | null
-  activeJournalText: string
-  onSelectJournal: (slug: string) => void
+type JournalEntry = {
+  id: string
+  slug: string
+  title: string
+  date: string
+  tags: string[]
+  content: string
 }
 
-export function Journal({ journalIndex, activeJournalSlug, activeJournalText, onSelectJournal }: JournalProps) {
+type JournalProps = {
+  // Props kept for backward compatibility but not used
+}
+
+export function Journal({}: JournalProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [entries, setEntries] = useState<JournalEntry[]>([])
+  const [activeEntry, setActiveEntry] = useState<JournalEntry | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // Debug logging
-  console.log('Journal component rendered', {
-    journalIndexLength: journalIndex?.length,
-    activeJournalSlug,
-    hasActiveText: !!activeJournalText
-  })
+  // Load entries from Supabase
+  useEffect(() => {
+    loadEntries()
+  }, [])
+
+  const loadEntries = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('journal_entries')
+        .select('*')
+        .order('date', { ascending: false })
+
+      if (error) throw error
+      setEntries(data || [])
+    } catch (error) {
+      console.error('Error loading journal entries:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Get all unique tags
   const allTags = useMemo(() => {
     const tagSet = new Set<string>()
-    journalIndex.forEach(entry => {
+    entries.forEach(entry => {
       if (entry.tags && Array.isArray(entry.tags)) {
         entry.tags.forEach(tag => {
           if (tag && typeof tag === 'string') {
@@ -33,13 +56,12 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
       }
     })
     return Array.from(tagSet).sort()
-  }, [journalIndex])
+  }, [entries])
 
   // Filter entries based on search and tag
   const filteredEntries = useMemo(() => {
-    let filtered = journalIndex
+    let filtered = entries
 
-    // Filter by search query (title or date)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(entry => 
@@ -48,7 +70,6 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
       )
     }
 
-    // Filter by selected tag
     if (selectedTag) {
       filtered = filtered.filter(entry => 
         entry.tags && Array.isArray(entry.tags) && entry.tags.includes(selectedTag)
@@ -56,7 +77,7 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
     }
 
     return filtered
-  }, [journalIndex, searchQuery, selectedTag])
+  }, [entries, searchQuery, selectedTag])
 
   const clearFilters = () => {
     setSearchQuery('')
@@ -65,9 +86,12 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
 
   const hasFilters = searchQuery.trim() || selectedTag
 
+  const selectEntry = (entry: JournalEntry) => {
+    setActiveEntry(entry)
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header with Classical styling */}
       <div>
         <h2 className="section-title">Journal</h2>
         <p className="text-[var(--text-secondary)] text-sm mt-4">
@@ -76,11 +100,9 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {/* Entries List with Search/Filter */}
         <div className="box md:col-span-1">
           <div className="box-header">Entries</div>
           <div className="p-3">
-            {/* Search Bar */}
             <div className="mb-4">
               <div className="relative">
                 <Search 
@@ -97,7 +119,6 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
               </div>
             </div>
 
-            {/* Tag Filter */}
             {allTags.length > 0 && (
               <div className="mb-4">
                 <div className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-2 flex items-center gap-1">
@@ -123,7 +144,6 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
               </div>
             )}
 
-            {/* Clear Filters Button */}
             {hasFilters && (
               <button
                 onClick={clearFilters}
@@ -134,8 +154,11 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
               </button>
             )}
 
-            {/* Entries List */}
-            {journalIndex.length === 0 ? (
+            {loading ? (
+              <div className="text-sm text-[var(--text-muted)] italic py-4">
+                Loading entries...
+              </div>
+            ) : entries.length === 0 ? (
               <div className="text-sm text-[var(--text-muted)] italic py-4">
                 No entries yet. First journal posts coming soon.
               </div>
@@ -152,13 +175,13 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
                 <ul className="list-plain">
                   {filteredEntries.map((entry) => (
                     <li
-                      key={entry.slug}
+                      key={entry.id}
                       className={`cursor-pointer transition-all ${
-                        activeJournalSlug === entry.slug 
+                        activeEntry?.id === entry.id
                           ? 'text-[var(--accent-2)]' 
                           : 'text-[var(--text-primary)]'
                       }`}
-                      onClick={() => onSelectJournal(entry.slug)}
+                      onClick={() => selectEntry(entry)}
                     >
                       <div className="text-sm font-medium hover:text-[var(--accent-2)]">
                         {entry.title}
@@ -187,13 +210,12 @@ export function Journal({ journalIndex, activeJournalSlug, activeJournalText, on
           </div>
         </div>
 
-        {/* Entry Content */}
         <div className="box md:col-span-2 entry-card journal">
           <div className="p-6">
-            {activeJournalText ? (
+            {activeEntry ? (
               <div>
                 <pre className="whitespace-pre-wrap font-[var(--font-body)] text-[15px] leading-relaxed text-[var(--text-secondary)]">
-                  {activeJournalText}
+                  {activeEntry.content}
                 </pre>
               </div>
             ) : (
