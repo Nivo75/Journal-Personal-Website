@@ -1,17 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Wrench, Hammer, Monitor, Cog, Briefcase, Mountain as Rock, Cpu, Flame, Camera, Users } from 'lucide-react'
+import { supabase } from '../lib/supabaseClient'
 
 type Project = {
+  id: string
   title: string
   category: string
   description: string
   date: string
   status: 'completed' | 'in-progress' | 'planned'
-  image?: string
-}
-
-type ProjectsProps = {
-  projects: Project[]
+  image_url?: string
 }
 
 type Category = 
@@ -65,15 +63,35 @@ const categoryColors: Record<Category, string> = {
   'Social': 'var(--accent-2)'
 }
 
-export function Projects({ projects }: ProjectsProps) {
+export function Projects() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Filter projects
+  useEffect(() => {
+    loadProjects()
+  }, [])
+
+  const loadProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      setProjects(data || [])
+    } catch (error) {
+      console.error('Error loading projects:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const filteredProjects = selectedCategory
     ? projects.filter(p => p.category === selectedCategory)
     : projects
 
-  // Group projects by category
   const projectsByCategory = categories.map(category => ({
     category,
     projects: projects.filter(p => p.category === category),
@@ -82,7 +100,6 @@ export function Projects({ projects }: ProjectsProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h2 className="section-title">Projects</h2>
         <p className="text-[var(--text-secondary)] text-sm mt-4">
@@ -91,7 +108,6 @@ export function Projects({ projects }: ProjectsProps) {
         </p>
       </div>
 
-      {/* Category Filter Pills */}
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setSelectedCategory(null)}
@@ -124,8 +140,11 @@ export function Projects({ projects }: ProjectsProps) {
         })}
       </div>
 
-      {/* Project Cards */}
-      {filteredProjects.length === 0 ? (
+      {loading ? (
+        <div className="text-sm text-[var(--text-muted)] italic py-8 text-center">
+          Loading projects...
+        </div>
+      ) : filteredProjects.length === 0 ? (
         <div className="box">
           <div className="p-6 text-sm text-[var(--text-muted)] italic text-center">
             {selectedCategory 
@@ -135,13 +154,13 @@ export function Projects({ projects }: ProjectsProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredProjects.map((project, i) => {
+          {filteredProjects.map((project) => {
             const Icon = categoryIcons[project.category as Category]
             const color = categoryColors[project.category as Category]
             
             return (
               <div 
-                key={i} 
+                key={project.id}
                 className="entry-card project"
                 style={{
                   borderTopColor: color
@@ -153,7 +172,6 @@ export function Projects({ projects }: ProjectsProps) {
                 />
                 
                 <div className="p-5">
-                  {/* Category Badge */}
                   <div 
                     className="flex items-center gap-1.5 mb-3"
                     style={{ 
@@ -167,7 +185,6 @@ export function Projects({ projects }: ProjectsProps) {
                     {project.category}
                   </div>
 
-                  {/* Title and Status */}
                   <div className="flex items-start justify-between mb-3 gap-4">
                     <h3 
                       className="text-lg font-[var(--font-header)] font-normal text-[var(--text-primary)]"
@@ -194,12 +211,10 @@ export function Projects({ projects }: ProjectsProps) {
                     </span>
                   </div>
 
-                  {/* Description */}
                   <p className="text-[var(--text-secondary)] text-sm mb-3 leading-relaxed">
                     {project.description}
                   </p>
 
-                  {/* Date */}
                   <div className="text-xs text-[var(--text-muted)]">
                     {project.date}
                   </div>
