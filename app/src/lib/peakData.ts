@@ -6,6 +6,7 @@ export interface Peak {
   lat: number
   lng: number
   elev: number
+  prominence: number
   gain: number
   distance: number
   date: string
@@ -24,6 +25,7 @@ interface HikeRow {
   Lat: string
   Long: string
   'Elevation(ft)': string
+  'Prominence(ft)': string
   'Elevation-Gain(ft)': string
   'Distance(mi)': string
   Quality: string
@@ -49,8 +51,9 @@ export async function loadPeaks(): Promise<Peak[]> {
       location: row.Location?.trim()      || '',
       lat:      parseFloat(row.Lat),
       lng:      parseFloat(row.Long),
-      elev:     parseInt(row['Elevation(ft)'])       || 0,
-      gain:     parseInt(row['Elevation-Gain(ft)'])  || 0,
+      elev:       parseInt(row['Elevation(ft)'])       || 0,
+      prominence: parseInt(row['Prominence(ft)'])      || 0,
+      gain:       parseInt(row['Elevation-Gain(ft)'])  || 0,
       distance: parseFloat(row['Distance(mi)'])      || 0,
       date:     row.AscentDate?.trim()               || '',
       quality:  parseInt(row.Quality)                || 0,
