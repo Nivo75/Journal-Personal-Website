@@ -1,3 +1,0 @@
-AscentDate,PeakPointName,Location,Lat,Long,Elevation(ft),Elevation(m),Prominence(ft),Prominence(m),Elevation-Gain(ft),Elevation-Gain(m),Distance(mi),Distance(km),Time-Up(min),Time-Down(min),Quality,RoadHike,MaintainedTrail,UnmaintainedTrail,Bushwhack,OpenCountry,MudSwamp,SnowOnGround,Scramble,ExposedScramble,Crampons,Rope,Headlamp,Poles,TentCamp,Solo-Hike,OnlyPartyOnMountain
-10/27/18,Sandstone Peak,CA,34.120429,-118.931994,3111,948,2201,671,1006,307,5.7,9.173,60,110,5,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
-11/17/18,Mugu Peak,CA,34.0926,-119.055101,1266,386,380,116,1243,379,5,8.047,90,70,4,FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
