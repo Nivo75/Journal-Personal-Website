@@ -1,0 +1,4 @@
+app/src/content/trips.json
+app/src/content/photos.json
+app/src/content/profile.json
+app/src/content/projects.json
