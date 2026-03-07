@@ -5,7 +5,6 @@ const MOSS   = '#2C3A2E'
 const SIENNA = '#C4622D'
 const PARCH  = '#EDE4D0'
 const STONE  = '#8B7355'
-const CREAM  = '#F5EFE0'
 const INK    = '#1A2318'
 const MUTED  = '#A89070'
 
@@ -132,7 +131,7 @@ export default function GalleryPage() {
       .from('gallery')
       .select('*')
       .order('date', { ascending: false })
-      .then(({ data, error }) => {
+      .then(({ data, error }: { data: any; error: any }) => {
         if (error) setError(error.message)
         else setPhotos(data || [])
         setLoading(false)

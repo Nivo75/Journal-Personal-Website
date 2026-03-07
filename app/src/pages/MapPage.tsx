@@ -8,7 +8,6 @@ const PARCH  = '#EDE4D0'
 const STONE  = '#8B7355'
 const INK    = '#1A2318'
 const MUTED  = '#A89070'
-const MOSS   = '#2C3A2E'
 
 const PROMINENCE_FILTERS = [
   { label: 'All Peaks',  min: 0     },
