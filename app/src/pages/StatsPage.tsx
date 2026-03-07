@@ -84,7 +84,7 @@ export default function StatsPage() {
   const maxElev = Math.max(...peaks.map(p => p.elev))
 
   return (
-    <div style={{ background: CREAM, minHeight: '100vh', paddingTop: '80px' }}>
+    <div style={{ background: INK, minHeight: '100vh', paddingTop: '80px' }}>
 
       {/* Header */}
       <div style={{ background: INK, padding: '4rem 2rem 3rem', textAlign: 'center', borderBottom: `3px solid ${SIENNA}` }}>
